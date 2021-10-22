@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "eu.pb4.entityviewdistance.mixin",
+  "compatibilityLevel": "JAVA_16",
+  "mixins": [
+    "EntityMixin",
+    "EntityTrackerAccessor",
+    "EntityTypeMixin",
+    "ThreadedAnvilChunkStorageAccessor",
+    "ThreadedAnvilChunkStorageMixin"
+  ],
+  "client": [
+    "client.sodium.SodiumOptionGroupAccessor",
+    "client.sodium.SodiumGameOptionPagesMixin",
+    "client.VideoOptionsScreenMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 0
+  }
+}

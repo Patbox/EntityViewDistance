@@ -1,0 +1,42 @@
+{
+  "schemaVersion": 1,
+  "id": "entity-view-distance",
+  "version": "${version}",
+
+  "name": "Entity View Distance",
+  "description": "This mods allows more precise manipulation of entity view distance on client and server",
+  "authors": [
+    "Patbox"
+  ],
+  "contact": {
+    "homepage": "https://pb4.eu",
+    "sources": "https://github.com/Patbox/EntityViewDistance"
+  },
+
+  "license": "LGPLv3",
+  "icon": "assets/entityviewdistance/icon.png",
+  "accessWidener": "entityviewdistance.accesswidener",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "eu.pb4.entityviewdistance.EVDMod"
+    ],
+    "client": [
+      "eu.pb4.entityviewdistance.EVDMod"
+    ],
+    "server": [
+      "eu.pb4.entityviewdistance.EVDMod"
+    ],
+    "modmenu": [ "eu.pb4.entityviewdistance.modcompat.ModMenuCompat" ]
+  },
+  "mixins": [
+    "entityviewdistance.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": ">=1.17.0",
+    "java": ">=16"
+  }
+}
