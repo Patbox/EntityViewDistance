@@ -8,6 +8,7 @@ import me.jellysquid.mods.sodium.client.gui.options.OptionGroup;
 import me.jellysquid.mods.sodium.client.gui.options.OptionPage;
 import net.minecraft.text.TranslatableText;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -15,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 
+@Pseudo
 @Mixin(SodiumGameOptionPages.class)
 public class SodiumGameOptionPagesMixin {
     @Inject(method = "quality", at = @At("TAIL"), locals = LocalCapture.CAPTURE_FAILSOFT, remap = false, require = 0)

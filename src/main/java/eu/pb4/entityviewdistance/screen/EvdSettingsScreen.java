@@ -19,6 +19,8 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static eu.pb4.entityviewdistance.EvdUtils.getKey;
@@ -63,13 +65,22 @@ public class EvdSettingsScreen extends SpruceScreen {
         });
 
         this.list.addSingleOptionEntry(new SpruceSeparatorOption("", false, null));
+
+        var entries = new ArrayList<EvdValueModifierOption>();
+
         for (var entry : Registry.ENTITY_TYPE) {
             if (entry.getMaxTrackDistance() == 0) {
                 continue;
             }
 
-            this.list.addSingleOptionEntry(new EvdValueModifierOption(entry));
+            entries.add(new EvdValueModifierOption(entry));
         }
+        entries.sort(Comparator.comparing(e -> e.nameString));
+
+        for (var entry : entries) {
+            this.list.addSingleOptionEntry(entry);
+        }
+
 
         this.addDrawableChild(list);
 

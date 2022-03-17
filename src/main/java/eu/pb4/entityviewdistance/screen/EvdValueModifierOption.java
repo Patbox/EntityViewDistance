@@ -13,10 +13,13 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.EntityType;
+import net.minecraft.text.BaseText;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.Language;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 
@@ -27,11 +30,19 @@ public class EvdValueModifierOption extends SpruceOption {
 
     private final EntityType type;
     private final Identifier identifier;
+    private final Text name;
+    public final String nameString;
 
     public EvdValueModifierOption(EntityType type) {
         super(type.getTranslationKey());
         this.type = type;
         this.identifier = Registry.ENTITY_TYPE.getId(type);
+        var possibleName = this.type.getName();
+        if (possibleName instanceof TranslatableText text && !Language.getInstance().hasTranslation(text.getKey())) {
+            possibleName = new LiteralText(Registry.ENTITY_TYPE.getId(this.type).toString());
+        }
+        this.name = possibleName;
+        this.nameString = this.name.getString();
     }
 
     private int getDefault() {
@@ -58,9 +69,8 @@ public class EvdValueModifierOption extends SpruceOption {
     public SpruceWidget createWidget(Position position, int width) {
         var container = new SpruceContainerWidget(position, width, 20);
         container.addChildren((containerWidth, containerHeight, widgetAdder) -> {
-
             var label = new SpruceLabelWidget(Position.of(0, 0),
-                    getText("menu.options.type", this.type.getName().shallowCopy().formatted(Formatting.GRAY), this.getDefault()).formatted(Formatting.DARK_GRAY),
+                    getText("menu.options.type", this.name.shallowCopy().formatted(Formatting.GRAY), this.getDefault()).formatted(Formatting.DARK_GRAY),
                     width - 80);
             widgetAdder.accept(label);
 
