@@ -5,12 +5,12 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.entityviewdistance.config.ConfigManager;
 import me.lucko.fabric.api.permissions.v0.Permissions;
-import net.fabricmc.fabric.api.command.v1.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.IdentifierArgumentType;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Style;
+import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
@@ -25,16 +25,12 @@ import static net.minecraft.server.command.CommandManager.literal;
 
 public class EvdCommands {
     public static final Predicate<ServerCommandSource> IS_HOST = source -> {
-        try {
-            var player = source.getPlayer();
-            return source.getServer().isHost(player.getGameProfile());
-        } catch (CommandSyntaxException e) {
-            return false;
-        }
+        var player = source.getPlayer();
+        return player != null && source.getServer().isHost(player.getGameProfile());
     };
 
     public static void register() {
-        CommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> {
+        CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
             dispatcher.register(
                     literal("entityviewdistance")
                             .requires(Permissions.require("entityviewdistance.main", true))
@@ -70,7 +66,7 @@ public class EvdCommands {
     private static int getEntity(CommandContext<ServerCommandSource> context) {
         var identifier = context.getArgument("entity", Identifier.class);
         var val = ConfigManager.getConfig().entityViewDistances.getOrDefault(identifier, -1);
-        context.getSource().sendFeedback(new LiteralText("" + identifier + " = " + val + " (Default: " + Registry.ENTITY_TYPE.get(identifier).getMaxTrackDistance() * 16 + ")"), false);
+        context.getSource().sendFeedback(Text.literal("" + identifier + " = " + val + " (Default: " + Registry.ENTITY_TYPE.get(identifier).getMaxTrackDistance() * 16 + ")"), false);
         return val;
     }
 
@@ -78,7 +74,7 @@ public class EvdCommands {
         var identifier = context.getArgument("entity", Identifier.class);
         var val = MathHelper.clamp(context.getArgument("distance", Integer.class), -1, 32 * 16);
         ConfigManager.getConfig().entityViewDistances.put(identifier, val);
-        context.getSource().sendFeedback(new LiteralText("Changed " + identifier + " to " + val), false);
+        context.getSource().sendFeedback(Text.literal("Changed " + identifier + " to " + val), false);
         EvdUtils.updateAll();
         EvdUtils.updateServer(context.getSource().getServer());
         return val;
@@ -88,17 +84,17 @@ public class EvdCommands {
         if (ConfigManager.loadConfig()) {
             EvdUtils.updateAll();
             EvdUtils.updateServer(context.getSource().getServer());
-            context.getSource().sendFeedback(new LiteralText("Reloaded config!"), false);
+            context.getSource().sendFeedback(Text.literal("Reloaded config!"), false);
         } else {
-            context.getSource().sendError(new LiteralText("Error occurred while reloading config!").formatted(Formatting.RED));
+            context.getSource().sendError(Text.literal("Error occurred while reloading config!").formatted(Formatting.RED));
         }
         return 1;
     }
 
     private static int about(CommandContext<ServerCommandSource> context) {
-        context.getSource().sendFeedback(new LiteralText("Entity View Distance")
+        context.getSource().sendFeedback(Text.literal("Entity View Distance")
                 .setStyle(Style.EMPTY.withColor(0xfc4103))
-                .append(new LiteralText(" - " + EVDMod.VERSION)
+                .append(Text.literal(" - " + EVDMod.VERSION)
                         .formatted(Formatting.WHITE)
                 ), false);
 

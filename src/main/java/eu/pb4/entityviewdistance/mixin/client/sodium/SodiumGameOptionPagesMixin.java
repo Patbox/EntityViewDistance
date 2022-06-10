@@ -6,7 +6,7 @@ import me.jellysquid.mods.sodium.client.gui.SodiumGameOptionPages;
 import me.jellysquid.mods.sodium.client.gui.options.Option;
 import me.jellysquid.mods.sodium.client.gui.options.OptionGroup;
 import me.jellysquid.mods.sodium.client.gui.options.OptionPage;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Pseudo;
 import org.spongepowered.asm.mixin.injection.At;
@@ -26,7 +26,7 @@ public class SodiumGameOptionPagesMixin {
         var builder = new ImmutableList.Builder<Option<?>>();
 
         for (var entry : list) {
-            if (!(entry.getName() instanceof TranslatableText translatableText && translatableText.getKey().equals("options.entityDistanceScaling"))) {
+            if (!(entry.getName().getContent() instanceof TranslatableTextContent translatableText && translatableText.getKey().equals("options.entityDistanceScaling"))) {
                 builder.add(entry);
             } else {
                 builder.add(SodiumCompat.BUTTON);

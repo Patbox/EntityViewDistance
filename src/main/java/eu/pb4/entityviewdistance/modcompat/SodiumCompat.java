@@ -8,9 +8,7 @@ import me.jellysquid.mods.sodium.client.gui.options.control.Control;
 import me.jellysquid.mods.sodium.client.gui.options.control.CyclingControl;
 import me.jellysquid.mods.sodium.client.gui.options.storage.OptionStorage;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -35,8 +33,8 @@ public class SodiumCompat {
 
     public static class FakeOptionImpl implements Option<Void> {
         private static final Text TITLE = getText("button.options");
-        private static final Text TOOLTIP = new TranslatableText("sodium.options.entity_distance.tooltip");
-        private final Control<Void> control =  new CyclingControl<>(this, SodiumCompat.Void.class, new Text[]{ LiteralText.EMPTY, LiteralText.EMPTY });
+        private static final Text TOOLTIP = Text.translatable("sodium.options.entity_distance.tooltip");
+        private final Control<Void> control =  new CyclingControl<>(this, SodiumCompat.Void.class, new Text[]{ Text.empty(), Text.empty() });
 
         @Override
         public Text getName() {

@@ -6,14 +6,17 @@ import eu.pb4.entityviewdistance.mixin.EntityTrackerAccessor;
 import eu.pb4.entityviewdistance.mixin.ThreadedAnvilChunkStorageAccessor;
 import net.minecraft.entity.EntityType;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.MutableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.registry.Registry;
 
 public class EvdUtils {
-    public static TranslatableText getText(String type, Object... obj) {
-        return new TranslatableText("entityviewdistance" + "." + type, obj);
+    public static final String BUTTON_TEXT = getKey("button.options");
+
+    public static MutableText getText(String type, Object... obj) {
+        return Text.translatable("entityviewdistance" + "." + type, obj);
     }
 
     public static String getKey(String type) {

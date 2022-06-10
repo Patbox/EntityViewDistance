@@ -1,6 +1,5 @@
 package eu.pb4.entityviewdistance.config;
 
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -26,11 +25,11 @@ public enum EvdOverrideSide {
     }
 
     static {
-        var base = new LiteralText("");
+        var base = Text.empty();
 
         for (var entry : EvdOverrideSide.values()) {
-            base.append(entry.displayName.shallowCopy().formatted(Formatting.GOLD));
-            base.append(new LiteralText(" - ").formatted(Formatting.GRAY));
+            base.append(entry.displayName.copy().formatted(Formatting.GOLD));
+            base.append(Text.literal(" - ").formatted(Formatting.GRAY));
             base.append(entry.description);
             base.append("\n");
         }

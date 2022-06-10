@@ -14,8 +14,7 @@ import eu.pb4.entityviewdistance.config.EvdOverrideSide;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.registry.Registry;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +30,7 @@ public class EvdSettingsScreen extends SpruceScreen {
     private SpruceOptionListWidget list;
 
     public EvdSettingsScreen(@Nullable Screen parent) {
-        super(new LiteralText("Entity View Distance Settings"));
+        super(Text.literal("Entity View Distance Settings"));
         this.parent = parent;
     }
 
@@ -50,9 +49,9 @@ public class EvdSettingsScreen extends SpruceScreen {
                 0.5d,
                 5.0d,
                 0.25f,
-                () -> (double) MinecraftClient.getInstance().options.entityDistanceScaling,
-                (value) -> MinecraftClient.getInstance().options.entityDistanceScaling = (float) (double) value,
-                (value) -> new TranslatableText(getKey("menu.option.vanilla_dist"), (int) (value.get() * 100d)),
+                () -> MinecraftClient.getInstance().options.getEntityDistanceScaling().getValue(),
+                (value) -> MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(value),
+                (value) -> Text.translatable(getKey("menu.option.vanilla_dist"), (int) (value.get() * 100d)),
                 getText("menu.option.vanilla_dist.description")
         ));
 
@@ -86,14 +85,24 @@ public class EvdSettingsScreen extends SpruceScreen {
 
         this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 100, this.height - 27), 200, 20, SpruceTexts.GUI_DONE,
                 btn -> {
-                    ConfigManager.overrideConfig();
-                    EvdUtils.updateAll();
-                    if (this.client.getServer() != null) {
-                        this.client.getServer().execute(() -> EvdUtils.updateServer(this.client.getServer()));
-                    }
-
-                    this.client.setScreen(this.parent);
+                    saveChanges();
                 }).asVanilla());
+    }
+
+    private void saveChanges() {
+        ConfigManager.overrideConfig();
+        EvdUtils.updateAll();
+        if (this.client.getServer() != null) {
+            this.client.getServer().execute(() -> EvdUtils.updateServer(this.client.getServer()));
+        }
+
+        this.client.setScreen(this.parent);
+    }
+
+    @Override
+    public void close() {
+        this.saveChanges();
+        super.close();
     }
 
     @Override

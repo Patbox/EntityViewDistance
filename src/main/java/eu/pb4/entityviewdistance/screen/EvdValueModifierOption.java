@@ -7,16 +7,11 @@ import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
 import dev.lambdaurora.spruceui.widget.SpruceWidget;
 import dev.lambdaurora.spruceui.widget.container.SpruceContainerWidget;
 import dev.lambdaurora.spruceui.widget.text.SpruceTextFieldWidget;
-import eu.pb4.entityviewdistance.EvdUtils;
 import eu.pb4.entityviewdistance.config.ConfigManager;
-import net.minecraft.SharedConstants;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.EntityType;
-import net.minecraft.text.BaseText;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
@@ -38,8 +33,8 @@ public class EvdValueModifierOption extends SpruceOption {
         this.type = type;
         this.identifier = Registry.ENTITY_TYPE.getId(type);
         var possibleName = this.type.getName();
-        if (possibleName instanceof TranslatableText text && !Language.getInstance().hasTranslation(text.getKey())) {
-            possibleName = new LiteralText(Registry.ENTITY_TYPE.getId(this.type).toString());
+        if (possibleName.getContent() instanceof TranslatableTextContent text && !Language.getInstance().hasTranslation(text.getKey())) {
+            possibleName = Text.literal(Registry.ENTITY_TYPE.getId(this.type).toString());
         }
         this.name = possibleName;
         this.nameString = this.name.getString();
@@ -70,11 +65,11 @@ public class EvdValueModifierOption extends SpruceOption {
         var container = new SpruceContainerWidget(position, width, 20);
         container.addChildren((containerWidth, containerHeight, widgetAdder) -> {
             var label = new SpruceLabelWidget(Position.of(0, 0),
-                    getText("menu.options.type", this.name.shallowCopy().formatted(Formatting.GRAY), this.getDefault()).formatted(Formatting.DARK_GRAY),
+                    getText("menu.options.type", this.name.copy().formatted(Formatting.GRAY), this.getDefault()).formatted(Formatting.DARK_GRAY),
                     width - 80);
             widgetAdder.accept(label);
 
-            var text = new SpruceTextFieldWidget(Position.of(containerWidth - 60, 0), 40, containerHeight, LiteralText.EMPTY) {
+            var text = new SpruceTextFieldWidget(Position.of(containerWidth - 60, 0), 40, containerHeight, Text.empty()) {
                 @Override
                 public void setFocused(boolean focused) {
                     super.setFocused(focused);
@@ -98,14 +93,14 @@ public class EvdValueModifierOption extends SpruceOption {
                 }
             };
 
-            widgetAdder.accept(new SpruceButtonWidget(Position.of(containerWidth - 80, 0), 20, containerHeight, new LiteralText("-"), (x) -> {
+            widgetAdder.accept(new SpruceButtonWidget(Position.of(containerWidth - 80, 0), 20, containerHeight, Text.literal("-"), (x) -> {
                 if (Screen.hasShiftDown()) {
                     text.setText("" + (this.getValue() - 10));
                 } else {
                     text.setText("" + (this.getValue() - 1));
                 }
             }));
-            widgetAdder.accept(new SpruceButtonWidget(Position.of(containerWidth - 20, 0), 20, containerHeight, new LiteralText("+"), (x) -> {
+            widgetAdder.accept(new SpruceButtonWidget(Position.of(containerWidth - 20, 0), 20, containerHeight, Text.literal("+"), (x) -> {
                 if (Screen.hasShiftDown()) {
                     text.setText("" + (this.getValue() + 10));
                 } else {
