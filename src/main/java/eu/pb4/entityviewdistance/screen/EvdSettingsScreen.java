@@ -1,9 +1,12 @@
 package eu.pb4.entityviewdistance.screen;
 
+import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.systems.RenderSystem;
 import dev.lambdaurora.spruceui.Position;
 import dev.lambdaurora.spruceui.SpruceTexts;
 import dev.lambdaurora.spruceui.option.*;
 import dev.lambdaurora.spruceui.screen.SpruceScreen;
+import dev.lambdaurora.spruceui.util.ScissorManager;
 import dev.lambdaurora.spruceui.widget.SpruceButtonWidget;
 import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
 import dev.lambdaurora.spruceui.widget.SpruceWidget;
@@ -13,9 +16,14 @@ import eu.pb4.entityviewdistance.config.ConfigManager;
 import eu.pb4.entityviewdistance.config.EvdOverrideSide;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormat;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.util.math.MathHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -37,7 +45,77 @@ public class EvdSettingsScreen extends SpruceScreen {
     @Override
     protected void init() {
         super.init();
-        this.list = new SpruceOptionListWidget(Position.of(0, 32), this.width, this.height - 32 - 32);
+        this.list = new SpruceOptionListWidget(Position.of(0, 32), this.width, this.height - 32 - 32) {
+            @Override
+            protected int getScrollbarPositionX() {
+                return this.width / 2 + 124 + 32;
+            }
+
+            @Override
+            protected void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+                int scrollbarPositionX = this.getScrollbarPositionX();
+                int scrollBarEnd = scrollbarPositionX + 6;
+                int left = this.getX();
+                int right = left + this.getWidth();
+                int top = this.getY();
+                int bottom = top + this.getHeight();
+
+                ScissorManager.push(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+                for (var id = 0; id < this.getEntriesCount(); id++) {
+                    this.getEntry(id).render(matrices, mouseX, mouseY, delta);
+                }
+                ScissorManager.pop();
+
+                var tessellator = Tessellator.getInstance();
+                var buffer = tessellator.getBuffer();
+                // Render the transition thingy.
+                if (this.shouldRenderTransition()) {
+                    RenderSystem.enableBlend();
+                    RenderSystem.blendFuncSeparate(
+                            GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
+                            GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE
+                    );
+                    RenderSystem.disableTexture();
+                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+                    buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
+                    // TOP
+                    buffer.vertex(left, top + 4, 0).color(0, 0, 0, 0).next();
+                    buffer.vertex(right, top + 4, 0).color(0, 0, 0, 0).next();
+                    buffer.vertex(right, top, 0).color(0, 0, 0, 255).next();
+                    buffer.vertex(left, top, 0).color(0, 0, 0, 255).next();
+                    // RIGHT
+                    buffer.vertex(right - 4, bottom, 0).color(0, 0, 0, 0).next();
+                    buffer.vertex(right, bottom, 0).color(0, 0, 0, 255).next();
+                    buffer.vertex(right, top, 0).color(0, 0, 0, 255).next();
+                    buffer.vertex(right - 4, top, 0).color(0, 0, 0, 0).next();
+                    // BOTTOM
+                    buffer.vertex(left, bottom, 0).color(0, 0, 0, 255).next();
+                    buffer.vertex(right, bottom, 0).color(0, 0, 0, 255).next();
+                    buffer.vertex(right, bottom - 4, 0).color(0, 0, 0, 0).next();
+                    buffer.vertex(left, bottom - 4, 0).color(0, 0, 0, 0).next();
+                    tessellator.draw();
+                }
+
+                // Scrollbar
+                int maxScroll = this.getMaxScroll();
+                if (maxScroll > 0) {
+                    RenderSystem.disableTexture();
+                    int scrollbarHeight = (int) ((float) ((this.getHeight()) * (this.getHeight())) / (float) this.getMaxPosition());
+                    scrollbarHeight = MathHelper.clamp(scrollbarHeight, 32, this.getHeight() - 8);
+                    int scrollbarY = (int) this.getScrollAmount() * (this.getHeight() - scrollbarHeight) / maxScroll + this.getY();
+                    if (scrollbarY < this.getY()) {
+                        scrollbarY = this.getY();
+                    }
+
+                    this.renderScrollbar(tessellator, buffer, scrollbarPositionX, scrollBarEnd, scrollbarY, scrollbarHeight);
+                }
+
+                this.getBorder().render(matrices, this, mouseX, mouseY, delta);
+
+                RenderSystem.enableTexture();
+                RenderSystem.disableBlend();
+            }
+        };
 
         var toggleValue = new AtomicInteger(ConfigManager.getConfig().mode.ordinal());
 
@@ -67,7 +145,7 @@ public class EvdSettingsScreen extends SpruceScreen {
 
         var entries = new ArrayList<EvdValueModifierOption>();
 
-        for (var entry : Registry.ENTITY_TYPE) {
+        for (var entry : Registries.ENTITY_TYPE) {
             if (entry.getMaxTrackDistance() == 0) {
                 continue;
             }
@@ -79,7 +157,6 @@ public class EvdSettingsScreen extends SpruceScreen {
         for (var entry : entries) {
             this.list.addSingleOptionEntry(entry);
         }
-
 
         this.addDrawableChild(list);
 
@@ -112,6 +189,6 @@ public class EvdSettingsScreen extends SpruceScreen {
 
     @Override
     public void renderTitle(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 5, 16777215);
+        drawCenteredText(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
     }
 }

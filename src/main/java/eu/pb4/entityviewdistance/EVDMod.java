@@ -8,7 +8,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.registry.RegistryEntryAddedCallback;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,11 +24,11 @@ public class EVDMod implements ModInitializer, DedicatedServerModInitializer, Cl
         ConfigManager.loadConfig();
         EvdCommands.register();
 
-        for (var entry : Registry.ENTITY_TYPE) {
-            EvdUtils.initialize(entry, Registry.ENTITY_TYPE.getId(entry));
+        for (var entry : Registries.ENTITY_TYPE) {
+            EvdUtils.initialize(entry, Registries.ENTITY_TYPE.getId(entry));
         }
 
-        RegistryEntryAddedCallback.event(Registry.ENTITY_TYPE).register(((rawId, id, entry) -> {
+        RegistryEntryAddedCallback.event(Registries.ENTITY_TYPE).register(((rawId, id, entry) -> {
             EvdUtils.initialize(entry, id);
         }));
     }

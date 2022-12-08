@@ -5,12 +5,13 @@ import eu.pb4.entityviewdistance.interfaces.EvdEntityType;
 import eu.pb4.entityviewdistance.mixin.EntityTrackerAccessor;
 import eu.pb4.entityviewdistance.mixin.ThreadedAnvilChunkStorageAccessor;
 import net.minecraft.entity.EntityType;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registry;
 
 public class EvdUtils {
     public static final String BUTTON_TEXT = getKey("button.options");
@@ -34,8 +35,8 @@ public class EvdUtils {
     public static void updateAll() {
         var map = ConfigManager.getConfig().entityViewDistances;
 
-        for (var entry : Registry.ENTITY_TYPE) {
-            var identifier = Registry.ENTITY_TYPE.getId(entry);
+        for (var entry : Registries.ENTITY_TYPE) {
+            var identifier = Registries.ENTITY_TYPE.getId(entry);
             var value = map.getOrDefault(identifier, -1);
             ((EvdEntityType) entry).evd_setTrackingDistance(MathHelper.clamp(value, -1, 32 * 16));
         }

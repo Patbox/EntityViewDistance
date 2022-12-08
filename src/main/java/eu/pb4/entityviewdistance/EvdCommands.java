@@ -8,13 +8,13 @@ import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.command.CommandSource;
 import net.minecraft.command.argument.IdentifierArgumentType;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
 
 import java.util.Locale;
 import java.util.function.Function;
@@ -47,7 +47,7 @@ public class EvdCommands {
                                             .suggests((ctx, builder) -> {
                                                 var remaining = builder.getRemaining().toLowerCase(Locale.ROOT);
 
-                                                CommandSource.forEachMatching(Registry.ENTITY_TYPE.getIds(), remaining, Function.identity(), id -> {
+                                                CommandSource.forEachMatching(Registries.ENTITY_TYPE.getIds(), remaining, Function.identity(), id -> {
                                                     builder.suggest(id.toString(), null);
                                                 });
 
@@ -66,7 +66,7 @@ public class EvdCommands {
     private static int getEntity(CommandContext<ServerCommandSource> context) {
         var identifier = context.getArgument("entity", Identifier.class);
         var val = ConfigManager.getConfig().entityViewDistances.getOrDefault(identifier, -1);
-        context.getSource().sendFeedback(Text.literal("" + identifier + " = " + val + " (Default: " + Registry.ENTITY_TYPE.get(identifier).getMaxTrackDistance() * 16 + ")"), false);
+        context.getSource().sendFeedback(Text.literal("" + identifier + " = " + val + " (Default: " + Registries.ENTITY_TYPE.get(identifier).getMaxTrackDistance() * 16 + ")"), false);
         return val;
     }
 

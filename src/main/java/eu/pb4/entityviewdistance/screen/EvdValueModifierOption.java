@@ -10,13 +10,13 @@ import dev.lambdaurora.spruceui.widget.text.SpruceTextFieldWidget;
 import eu.pb4.entityviewdistance.config.ConfigManager;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.entity.EntityType;
+import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
 import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.registry.Registry;
 
 
 import static eu.pb4.entityviewdistance.EvdUtils.getText;
@@ -31,10 +31,10 @@ public class EvdValueModifierOption extends SpruceOption {
     public EvdValueModifierOption(EntityType type) {
         super(type.getTranslationKey());
         this.type = type;
-        this.identifier = Registry.ENTITY_TYPE.getId(type);
+        this.identifier = Registries.ENTITY_TYPE.getId(type);
         var possibleName = this.type.getName();
         if (possibleName.getContent() instanceof TranslatableTextContent text && !Language.getInstance().hasTranslation(text.getKey())) {
-            possibleName = Text.literal(Registry.ENTITY_TYPE.getId(this.type).toString());
+            possibleName = Text.literal(Registries.ENTITY_TYPE.getId(this.type).toString());
         }
         this.name = possibleName;
         this.nameString = this.name.getString();

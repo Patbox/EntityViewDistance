@@ -16,6 +16,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Redirect;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 @Mixin(VideoOptionsScreen.class)
@@ -25,9 +26,9 @@ public class VideoOptionsScreenMixin {
     private static SimpleOption<?> entityViewDistance_addOptionButton(GameOptions instance) {
         return new SimpleOption<>(EvdUtils.BUTTON_TEXT, SimpleOption.emptyTooltip(), (x, y) -> Text.empty(), new SimpleOption.Callbacks<>() {
             @Override
-            public Function<SimpleOption<Boolean>, ClickableWidget> getButtonCreator(SimpleOption.TooltipFactory<Boolean> tooltipFactory, GameOptions gameOptions, int x, int y, int width) {
+            public Function<SimpleOption<Boolean>, ClickableWidget> getButtonCreator(SimpleOption.TooltipFactory<Boolean> tooltipFactory, GameOptions gameOptions, int x, int y, int width, Consumer<Boolean> changeCallback) {
                 return (option) -> {
-                    return new ButtonWidget(x, y, width, 20, Text.translatable(EvdUtils.BUTTON_TEXT), btn -> MinecraftClient.getInstance().setScreen(new EvdSettingsScreen(MinecraftClient.getInstance().currentScreen)));
+                    return ButtonWidget.builder(Text.translatable(EvdUtils.BUTTON_TEXT), btn -> MinecraftClient.getInstance().setScreen(new EvdSettingsScreen(MinecraftClient.getInstance().currentScreen))).position(x, y).width(width).build();
                 };
             }
 
