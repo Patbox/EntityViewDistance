@@ -7,7 +7,6 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.option.VideoOptionsScreen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.ClickableWidget;
-import net.minecraft.client.gui.widget.CyclingButtonWidget;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
 import net.minecraft.text.Text;
@@ -26,7 +25,7 @@ public class VideoOptionsScreenMixin {
     private static SimpleOption<?> entityViewDistance_addOptionButton(GameOptions instance) {
         return new SimpleOption<>(EvdUtils.BUTTON_TEXT, SimpleOption.emptyTooltip(), (x, y) -> Text.empty(), new SimpleOption.Callbacks<>() {
             @Override
-            public Function<SimpleOption<Boolean>, ClickableWidget> getButtonCreator(SimpleOption.TooltipFactory<Boolean> tooltipFactory, GameOptions gameOptions, int x, int y, int width, Consumer<Boolean> changeCallback) {
+            public Function<SimpleOption<Boolean>, ClickableWidget> getWidgetCreator(SimpleOption.TooltipFactory<Boolean> tooltipFactory, GameOptions gameOptions, int x, int y, int width, Consumer<Boolean> changeCallback) {
                 return (option) -> {
                     return ButtonWidget.builder(Text.translatable(EvdUtils.BUTTON_TEXT), btn -> MinecraftClient.getInstance().setScreen(new EvdSettingsScreen(MinecraftClient.getInstance().currentScreen))).position(x, y).width(width).build();
                 };

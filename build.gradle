@@ -35,7 +35,7 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	modImplementation include("me.lucko:fabric-permissions-api:0.1-SNAPSHOT")
 
-	modImplementation include("dev.lambdaurora:spruceui:4.1.0+1.19.3")
+	modImplementation include("dev.lambdaurora:spruceui:4.2.0+1.19.4")
 
 	modCompileOnly("maven.modrinth:sodium:mc1.19-0.4.2")
 	//modLocalRuntime("maven.modrinth:sodium:mc1.19-0.4.2")

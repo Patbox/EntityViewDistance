@@ -77,6 +77,7 @@ public class EvdCommands {
         context.getSource().sendFeedback(Text.literal("Changed " + identifier + " to " + val), false);
         EvdUtils.updateAll();
         EvdUtils.updateServer(context.getSource().getServer());
+        ConfigManager.overrideConfig();
         return val;
     }
 
