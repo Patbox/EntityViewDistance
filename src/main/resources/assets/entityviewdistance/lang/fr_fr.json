@@ -1,0 +1,19 @@
+{
+    "entityviewdistance.button.options": "Paramètres de distance des entités...",
+    "entityviewdistance.menu.title": "Paramètres de distance des entités",
+    "entityviewdistance.menu.option.toggle": "Mode : %s",
+    "entityviewdistance.menu.option.vanilla_dist": "Distance par défaut : %s%%",
+    "entityviewdistance.menu.option.vanilla_dist.description": "Modifie le modificateur de distance des entités par défaut.\nIl est utilisé pour les entités ayant une valeur par défaut",
+    "entityviewdistance.menu.separator.entity_options": "Overrides",
+    "entityviewdistance.menu.separator.entity_options.description": "Les valeurs sont enregistrées en tant que distance en blocs.\nUne valeur de -1 la remet à sa valeur par défaut.",
+    "entityviewdistance.menu.options.type": "%s (Par défaut : %s blocs)",
+
+    "entityviewdistance.side.both": "Client et serveur",
+    "entityviewdistance.side.both.desc": "Les distances de vue personnalisées sont appliquées sur le client et le serveur (LAN)",
+    "entityviewdistance.side.client": "Client",
+    "entityviewdistance.side.client.desc": "Les distances de vue personnalisées sont appliquées uniquement sur le client",
+    "entityviewdistance.side.server": "Serveur",
+    "entityviewdistance.side.server.desc": "Les distances de vue personnalisées sont appliquées uniquement sur le serveur (mode solo/LAN) et ignorées sur les serveurs multijoueurs",
+    "entityviewdistance.side.disabled": "Désactivé",
+    "entityviewdistance.side.disabled.desc": "Désactive la fonctionnalité du mod"
+}
