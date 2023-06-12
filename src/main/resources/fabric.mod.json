@@ -27,6 +27,9 @@
     "server": [
       "eu.pb4.entityviewdistance.EVDMod"
     ],
+    "preLaunch": [
+      "eu.pb4.entityviewdistance.CardboardWarning"
+    ],
     "modmenu": [ "eu.pb4.entityviewdistance.modcompat.ModMenuCompat" ]
   },
   "mixins": [
@@ -34,9 +37,9 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.11.3",
-    "fabric": "*",
-    "minecraft": ">=1.19.3",
-    "java": ">=16"
+    "fabricloader": ">=0.14.4",
+    "fabric-api": "*",
+    "minecraft": ">=1.20",
+    "java": ">=17"
   }
 }

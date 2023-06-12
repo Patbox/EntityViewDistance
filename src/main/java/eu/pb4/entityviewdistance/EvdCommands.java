@@ -66,7 +66,7 @@ public class EvdCommands {
     private static int getEntity(CommandContext<ServerCommandSource> context) {
         var identifier = context.getArgument("entity", Identifier.class);
         var val = ConfigManager.getConfig().entityViewDistances.getOrDefault(identifier, -1);
-        context.getSource().sendFeedback(Text.literal("" + identifier + " = " + val + " (Default: " + Registries.ENTITY_TYPE.get(identifier).getMaxTrackDistance() * 16 + ")"), false);
+        context.getSource().sendFeedback(() -> Text.literal("" + identifier + " = " + val + " (Default: " + Registries.ENTITY_TYPE.get(identifier).getMaxTrackDistance() * 16 + ")"), false);
         return val;
     }
 
@@ -74,7 +74,7 @@ public class EvdCommands {
         var identifier = context.getArgument("entity", Identifier.class);
         var val = MathHelper.clamp(context.getArgument("distance", Integer.class), -1, 32 * 16);
         ConfigManager.getConfig().entityViewDistances.put(identifier, val);
-        context.getSource().sendFeedback(Text.literal("Changed " + identifier + " to " + val), false);
+        context.getSource().sendFeedback( () -> Text.literal("Changed " + identifier + " view distance to " + val + " blocks"), false);
         EvdUtils.updateAll();
         EvdUtils.updateServer(context.getSource().getServer());
         ConfigManager.overrideConfig();
@@ -85,7 +85,7 @@ public class EvdCommands {
         if (ConfigManager.loadConfig()) {
             EvdUtils.updateAll();
             EvdUtils.updateServer(context.getSource().getServer());
-            context.getSource().sendFeedback(Text.literal("Reloaded config!"), false);
+            context.getSource().sendFeedback(() -> Text.literal("Reloaded config!"), false);
         } else {
             context.getSource().sendError(Text.literal("Error occurred while reloading config!").formatted(Formatting.RED));
         }
@@ -93,7 +93,7 @@ public class EvdCommands {
     }
 
     private static int about(CommandContext<ServerCommandSource> context) {
-        context.getSource().sendFeedback(Text.literal("Entity View Distance")
+        context.getSource().sendFeedback(() -> Text.literal("Entity View Distance")
                 .setStyle(Style.EMPTY.withColor(0xfc4103))
                 .append(Text.literal(" - " + EVDMod.VERSION)
                         .formatted(Formatting.WHITE)

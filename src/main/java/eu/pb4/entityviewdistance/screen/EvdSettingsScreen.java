@@ -15,7 +15,7 @@ import eu.pb4.entityviewdistance.EvdUtils;
 import eu.pb4.entityviewdistance.config.ConfigManager;
 import eu.pb4.entityviewdistance.config.EvdOverrideSide;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.DrawableHelper;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.render.Tessellator;
@@ -53,7 +53,7 @@ public class EvdSettingsScreen extends SpruceScreen {
             }
 
             @Override
-            protected void renderWidget(MatrixStack matrices, int mouseX, int mouseY, float delta) {
+            protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
                 int scrollbarPositionX = this.getScrollbarPositionX();
                 int scrollBarEnd = scrollbarPositionX + 6;
                 int left = this.getX();
@@ -61,9 +61,9 @@ public class EvdSettingsScreen extends SpruceScreen {
                 int top = this.getY();
                 int bottom = top + this.getHeight();
 
-                ScissorManager.push(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+                ScissorManager.push(this.getX(), this.getY() + 1, this.getWidth(), this.getHeight() - 1);
                 for (var id = 0; id < this.getEntriesCount(); id++) {
-                    this.getEntry(id).render(matrices, mouseX, mouseY, delta);
+                    this.getEntry(id).render(context, mouseX, mouseY, delta);
                 }
                 ScissorManager.pop();
 
@@ -111,7 +111,7 @@ public class EvdSettingsScreen extends SpruceScreen {
                     this.renderScrollbar(tessellator, buffer, scrollbarPositionX, scrollBarEnd, scrollbarY, scrollbarHeight);
                 }
 
-                this.getBorder().render(matrices, this, mouseX, mouseY, delta);
+                this.getBorder().render(context, this, mouseX, mouseY, delta);
 
                 //RenderSystem.enableTexture();
                 RenderSystem.disableBlend();
@@ -184,12 +184,7 @@ public class EvdSettingsScreen extends SpruceScreen {
     }
 
     @Override
-    public void renderBackground(MatrixStack matrices) {
-        this.renderBackgroundTexture(matrices);
-    }
-
-    @Override
-    public void renderTitle(MatrixStack matrices, int mouseX, int mouseY, float delta) {
-        DrawableHelper.drawCenteredTextWithShadow(matrices, this.textRenderer, this.title, this.width / 2, 20, 16777215);
+    public void renderTitle(DrawContext context, int mouseX, int mouseY, float delta) {
+        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
     }
 }

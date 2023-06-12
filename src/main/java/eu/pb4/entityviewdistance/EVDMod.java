@@ -20,7 +20,6 @@ public class EVDMod implements ModInitializer, DedicatedServerModInitializer, Cl
 
     @Override
     public void onInitialize() {
-        this.crabboardDetection();
         ConfigManager.loadConfig();
         EvdCommands.register();
 
@@ -43,19 +42,8 @@ public class EVDMod implements ModInitializer, DedicatedServerModInitializer, Cl
     @Override
     public void onInitializeServer() {
         ServerLifecycleEvents.SERVER_STARTED.register((client) -> {
-            this.crabboardDetection();
+            CardboardWarning.checkAndAnnounce();
             ConfigManager.overrideConfig();
         });
-    }
-
-    private void crabboardDetection() {
-        if (FabricLoader.getInstance().isModLoaded("cardboard")) {
-            LOGGER.error("");
-            LOGGER.error("Cardboard detected! This mod doesn't work with it!");
-            LOGGER.error("You won't get any support as long as it's present!");
-            LOGGER.error("");
-            LOGGER.error("Read more: https://gist.github.com/Patbox/e44844294c358b614d347d369b0fc3bf");
-            LOGGER.error("");
-        }
     }
 }
