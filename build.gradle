@@ -35,9 +35,9 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	modImplementation include("me.lucko:fabric-permissions-api:0.1-SNAPSHOT")
 
-	modImplementation include("dev.lambdaurora:spruceui:5.0.0+1.20")
+	modImplementation include("dev.lambdaurora:spruceui:5.0.3+1.20.2")
 
-	modCompileOnly("maven.modrinth:sodium:mc1.19-0.4.2")
+	modCompileOnly("maven.modrinth:sodium:mc1.20.2-0.5.3")
 	//modLocalRuntime("maven.modrinth:sodium:mc1.19-0.4.2")
 
 	modCompileOnly("com.terraformersmc:modmenu:4.0.0")
