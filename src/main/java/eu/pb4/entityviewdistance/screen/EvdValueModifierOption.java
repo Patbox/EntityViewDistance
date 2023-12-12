@@ -78,13 +78,6 @@ public class EvdValueModifierOption extends SpruceOption {
                         if (this.getText().isEmpty() || this.getText().equals("-")) {
                             this.setText("-1");
                         }
-                        try {
-                            var i = Integer.parseInt(this.getText());
-                            if (i > 32 * 16) {
-                                this.setText((32 * 16) + "");
-                            }
-
-                        } catch (Exception e) {}
                     } else {
                         if (this.getText().equals("-1")) {
                             this.setText("");

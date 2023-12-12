@@ -4,6 +4,9 @@ import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import dev.lambdaurora.spruceui.Position;
 import dev.lambdaurora.spruceui.SpruceTexts;
+import dev.lambdaurora.spruceui.background.Background;
+import dev.lambdaurora.spruceui.background.DirtTexturedBackground;
+import dev.lambdaurora.spruceui.background.SimpleColorBackground;
 import dev.lambdaurora.spruceui.option.*;
 import dev.lambdaurora.spruceui.screen.SpruceScreen;
 import dev.lambdaurora.spruceui.util.ScissorManager;
@@ -35,6 +38,7 @@ import static eu.pb4.entityviewdistance.EvdUtils.getKey;
 import static eu.pb4.entityviewdistance.EvdUtils.getText;
 
 public class EvdSettingsScreen extends SpruceScreen {
+    private static final Background DARKENED = new SimpleColorBackground(16, 16, 16, 60);
     private final Screen parent;
     private SpruceOptionListWidget list;
 
@@ -117,7 +121,6 @@ public class EvdSettingsScreen extends SpruceScreen {
                 RenderSystem.disableBlend();
             }
         };
-
         var toggleValue = new AtomicInteger(ConfigManager.getConfig().mode.ordinal());
 
         this.list.addOptionEntry(new SpruceCyclingOption(getKey("menu.option.toggle"),
@@ -175,6 +178,11 @@ public class EvdSettingsScreen extends SpruceScreen {
         }
 
         this.client.setScreen(this.parent);
+    }
+
+    @Override
+    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
+        this.renderBackgroundTexture(context);
     }
 
     @Override
