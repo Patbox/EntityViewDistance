@@ -27,7 +27,9 @@ public class VideoOptionsScreenMixin {
             @Override
             public Function<SimpleOption<Boolean>, ClickableWidget> getWidgetCreator(SimpleOption.TooltipFactory<Boolean> tooltipFactory, GameOptions gameOptions, int x, int y, int width, Consumer<Boolean> changeCallback) {
                 return (option) -> {
-                    return ButtonWidget.builder(Text.translatable(EvdUtils.BUTTON_TEXT), btn -> MinecraftClient.getInstance().setScreen(new EvdSettingsScreen(MinecraftClient.getInstance().currentScreen))).position(x, y).width(width).build();
+                    var client = MinecraftClient.getInstance();
+                    return ButtonWidget.builder(Text.translatable(EvdUtils.BUTTON_TEXT),
+                            btn -> MinecraftClient.getInstance().setScreen(new EvdSettingsScreen(client.currentScreen, client.options))).position(x, y).width(width).build();
                 };
             }
 

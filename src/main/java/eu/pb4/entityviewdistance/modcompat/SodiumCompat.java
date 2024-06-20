@@ -63,13 +63,12 @@ public class SodiumCompat {
 
         @Override
         public void setValue(Void aVoid) {
-            MinecraftClient.getInstance().setScreen(new EvdSettingsScreen(MinecraftClient.getInstance().currentScreen));
+            var client = MinecraftClient.getInstance();
+            MinecraftClient.getInstance().setScreen(new EvdSettingsScreen(client.currentScreen, client.options));
         }
 
         @Override
-        public void reset() {
-
-        }
+        public void reset() {}
 
         @Override
         public OptionStorage<?> getStorage() {
@@ -87,9 +86,7 @@ public class SodiumCompat {
         }
 
         @Override
-        public void applyChanges() {
-
-        }
+        public void applyChanges() {}
 
         @Override
         public Collection<OptionFlag> getFlags() {

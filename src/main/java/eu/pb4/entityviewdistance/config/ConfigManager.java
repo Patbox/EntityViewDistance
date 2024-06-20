@@ -46,8 +46,7 @@ public class ConfigManager {
 
             CONFIG = new Config(config);
             return true;
-        }
-        catch(IOException exception) {
+        } catch(Throwable exception) {
             EVDMod.LOGGER.error("Something went wrong while reading config!");
             exception.printStackTrace();
             CONFIG = new Config(new ConfigData());

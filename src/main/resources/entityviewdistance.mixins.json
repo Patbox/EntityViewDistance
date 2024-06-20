@@ -7,8 +7,8 @@
     "EntityMixin",
     "EntityTrackerAccessor",
     "EntityTypeMixin",
-    "ThreadedAnvilChunkStorageAccessor",
-    "ThreadedAnvilChunkStorageMixin"
+    "ServerChunkLoadingManagerAccessor",
+    "ServerChunkLoadingManagerMixin"
   ],
   "client": [
     "client.sodium.SodiumOptionGroupAccessor",

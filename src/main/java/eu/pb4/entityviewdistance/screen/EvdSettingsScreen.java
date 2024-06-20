@@ -1,151 +1,107 @@
 package eu.pb4.entityviewdistance.screen;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import dev.lambdaurora.spruceui.Position;
-import dev.lambdaurora.spruceui.SpruceTexts;
-import dev.lambdaurora.spruceui.background.Background;
-import dev.lambdaurora.spruceui.background.DirtTexturedBackground;
-import dev.lambdaurora.spruceui.background.SimpleColorBackground;
-import dev.lambdaurora.spruceui.option.*;
-import dev.lambdaurora.spruceui.screen.SpruceScreen;
-import dev.lambdaurora.spruceui.util.ScissorManager;
-import dev.lambdaurora.spruceui.widget.SpruceButtonWidget;
-import dev.lambdaurora.spruceui.widget.SpruceLabelWidget;
-import dev.lambdaurora.spruceui.widget.SpruceWidget;
-import dev.lambdaurora.spruceui.widget.container.SpruceOptionListWidget;
+import com.google.common.collect.ImmutableList;
+import com.mojang.serialization.Codec;
 import eu.pb4.entityviewdistance.EvdUtils;
 import eu.pb4.entityviewdistance.config.ConfigManager;
 import eu.pb4.entityviewdistance.config.EvdOverrideSide;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
+import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.Tessellator;
-import net.minecraft.client.render.VertexFormat;
-import net.minecraft.client.render.VertexFormats;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.option.GameOptions;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.registry.Registries;
+import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.List;
 
-import static eu.pb4.entityviewdistance.EvdUtils.getKey;
 import static eu.pb4.entityviewdistance.EvdUtils.getText;
 
-public class EvdSettingsScreen extends SpruceScreen {
-    private static final Background DARKENED = new SimpleColorBackground(16, 16, 16, 60);
-    private final Screen parent;
-    private SpruceOptionListWidget list;
+public class EvdSettingsScreen extends Screen {
+    public final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
+    protected final Screen parent;
+    protected final GameOptions gameOptions;
+    @Nullable
+    private EntryListWidget body;
 
-    public EvdSettingsScreen(@Nullable Screen parent) {
-        super(Text.literal("Entity View Distance Settings"));
+    public EvdSettingsScreen(@Nullable Screen parent, GameOptions options) {
+        super(Text.translatable("entityviewdistance.menu.title"));
         this.parent = parent;
+        this.gameOptions = options;
     }
 
-    @Override
     protected void init() {
-        super.init();
-        this.list = new SpruceOptionListWidget(Position.of(0, 32), this.width, this.height - 32 - 32) {
-            @Override
-            protected int getScrollbarPositionX() {
-                return this.width / 2 + 124 + 32;
-            }
+        this.initHeader();
+        this.initBody();
+        this.initFooter();
+        this.layout.forEachChild(this::addDrawableChild);
+        this.initTabNavigation();
+    }
 
-            @Override
-            protected void renderWidget(DrawContext context, int mouseX, int mouseY, float delta) {
-                int scrollbarPositionX = this.getScrollbarPositionX();
-                int scrollBarEnd = scrollbarPositionX + 6;
-                int left = this.getX();
-                int right = left + this.getWidth();
-                int top = this.getY();
-                int bottom = top + this.getHeight();
+    protected void initHeader() {
+        this.layout.addHeader(this.title, this.textRenderer);
+    }
 
-                ScissorManager.push(this.getX(), this.getY() + 1, this.getWidth(), this.getHeight() - 1);
-                for (var id = 0; id < this.getEntriesCount(); id++) {
-                    this.getEntry(id).render(context, mouseX, mouseY, delta);
-                }
-                ScissorManager.pop();
+    protected void initBody() {
+        this.body = this.layout.addBody(new EntryListWidget(this.client, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 25));
+        this.addOptions();
+    }
 
-                var tessellator = Tessellator.getInstance();
-                var buffer = tessellator.getBuffer();
-                // Render the transition thingy.
-                if (this.shouldRenderTransition()) {
-                    RenderSystem.enableBlend();
-                    RenderSystem.blendFuncSeparate(
-                            GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE_MINUS_SRC_ALPHA,
-                            GlStateManager.SrcFactor.ZERO, GlStateManager.DstFactor.ONE
-                    );
-                    //RenderSystem.disableTexture();
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
-                    buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-                    // TOP
-                    buffer.vertex(left, top + 4, 0).color(0, 0, 0, 0).next();
-                    buffer.vertex(right, top + 4, 0).color(0, 0, 0, 0).next();
-                    buffer.vertex(right, top, 0).color(0, 0, 0, 255).next();
-                    buffer.vertex(left, top, 0).color(0, 0, 0, 255).next();
-                    // RIGHT
-                    buffer.vertex(right - 4, bottom, 0).color(0, 0, 0, 0).next();
-                    buffer.vertex(right, bottom, 0).color(0, 0, 0, 255).next();
-                    buffer.vertex(right, top, 0).color(0, 0, 0, 255).next();
-                    buffer.vertex(right - 4, top, 0).color(0, 0, 0, 0).next();
-                    // BOTTOM
-                    buffer.vertex(left, bottom, 0).color(0, 0, 0, 255).next();
-                    buffer.vertex(right, bottom, 0).color(0, 0, 0, 255).next();
-                    buffer.vertex(right, bottom - 4, 0).color(0, 0, 0, 0).next();
-                    buffer.vertex(left, bottom - 4, 0).color(0, 0, 0, 0).next();
-                    tessellator.draw();
-                }
+    protected void initFooter() {
+        this.layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, (button) -> {
+            this.close();
+        }).width(200).build());
+    }
 
-                // Scrollbar
-                int maxScroll = this.getMaxScroll();
-                if (maxScroll > 0) {
-                    //RenderSystem.disableTexture();
-                    int scrollbarHeight = (int) ((float) ((this.getHeight()) * (this.getHeight())) / (float) this.getMaxPosition());
-                    scrollbarHeight = MathHelper.clamp(scrollbarHeight, 32, this.getHeight() - 8);
-                    int scrollbarY = (int) this.getScrollAmount() * (this.getHeight() - scrollbarHeight) / maxScroll + this.getY();
-                    if (scrollbarY < this.getY()) {
-                        scrollbarY = this.getY();
-                    }
+    protected void initTabNavigation() {
+        this.layout.refreshPositions();
+        if (this.body != null) {
+            this.body.position(this.width, this.layout);
+        }
+    }
 
-                    this.renderScrollbar(tessellator, buffer, scrollbarPositionX, scrollBarEnd, scrollbarY, scrollbarHeight);
-                }
+    public void removed() {
+        this.saveChanges();
+    }
 
-                this.getBorder().render(context, this, mouseX, mouseY, delta);
+    public void close() {
+        this.saveChanges();
+        this.client.setScreen(this.parent);
+    }
 
-                //RenderSystem.enableTexture();
-                RenderSystem.disableBlend();
-            }
-        };
-        var toggleValue = new AtomicInteger(ConfigManager.getConfig().mode.ordinal());
+    protected void addOptions() {
+        assert this.body != null;
+        var scale = gameOptions.getEntityDistanceScaling();
 
-        this.list.addOptionEntry(new SpruceCyclingOption(getKey("menu.option.toggle"),
-                (i) -> ConfigManager.getConfig().mode = EvdOverrideSide.values()[toggleValue.incrementAndGet() % EvdOverrideSide.values().length],
-                (option) -> getText("menu.option.toggle", EvdOverrideSide.values()[toggleValue.get() % EvdOverrideSide.values().length].displayName),
-                EvdOverrideSide.TOOLTIP
-        ), new SpruceDoubleOption(getKey("menu.option.vanilla_dist"),
-                0.5d,
-                5.0d,
-                0.25f,
-                () -> MinecraftClient.getInstance().options.getEntityDistanceScaling().getValue(),
-                (value) -> MinecraftClient.getInstance().options.getEntityDistanceScaling().setValue(value),
-                (value) -> Text.translatable(getKey("menu.option.vanilla_dist"), (int) (value.get() * 100d)),
-                getText("menu.option.vanilla_dist.description")
-        ));
+        this.body.addEntry(OptionEntry.create(
+                        CyclingButtonWidget.builder((EvdOverrideSide value) -> getText("menu.option.toggle", value.displayName))
+                                .values(List.of(EvdOverrideSide.values()))
+                                .tooltip(SimpleOption.constantTooltip(EvdOverrideSide.TOOLTIP))
+                                .initially(ConfigManager.getConfig().mode)
+                                .omitKeyText()
+                                .build(0, 0, 150, 20, getText("menu.option.toggle"), (button, value) -> {
+                                    ConfigManager.getConfig().mode = value;
+                                }),
+                        new SimpleOption<>("options.entityDistanceScaling", SimpleOption.constantTooltip(getText("menu.option.vanilla_dist.description")),
+                                (text, value) -> getText("menu.option.vanilla_dist", (int) (value * 100.0)),
+                                scale.getCallbacks(), Codec.doubleRange(0.5, 5.0), scale.getValue(), (value) -> {
+                        }).createWidget(gameOptions, 0, 0, 150, (x) -> gameOptions.getEntityDistanceScaling().setValue(x)),
+                        this
+                )
+        );
 
-        this.list.addSingleOptionEntry(new SpruceSeparatorOption(getKey("menu.separator.entity_options"), true, null));
-        this.list.addSingleOptionEntry(new SpruceOption("") {
-            @Override
-            public SpruceWidget createWidget(Position position, int width) {
-                return new SpruceLabelWidget(position, getText("menu.separator.entity_options.description"), width, true);
-            }
-        });
-
-        this.list.addSingleOptionEntry(new SpruceSeparatorOption("", false, null));
+        this.body.addEntry(new Separator(getText("menu.separator.entity_options"), textRenderer));
+        this.body.addEntry(new CenteredText(getText("menu.separator.entity_options.description").formatted(Formatting.GRAY), textRenderer));
+        this.body.addEntry(new Separator(null, textRenderer));
 
         var entries = new ArrayList<EvdValueModifierOption>();
 
@@ -154,45 +110,123 @@ public class EvdSettingsScreen extends SpruceScreen {
                 continue;
             }
 
-            entries.add(new EvdValueModifierOption(entry));
+            entries.add(new EvdValueModifierOption(entry, textRenderer));
         }
         entries.sort(Comparator.comparing(e -> e.nameString));
 
         for (var entry : entries) {
-            this.list.addSingleOptionEntry(entry);
+            this.body.addEntry(entry);
         }
 
-        this.addDrawableChild(list);
-
-        this.addDrawableChild(new SpruceButtonWidget(Position.of(this, this.width / 2 - 100, this.height - 27), 200, 20, SpruceTexts.GUI_DONE,
-                btn -> {
-                    saveChanges();
-                }).asVanilla());
     }
 
     private void saveChanges() {
         ConfigManager.overrideConfig();
         EvdUtils.updateAll();
+        this.gameOptions.write();
         if (this.client.getServer() != null) {
             this.client.getServer().execute(() -> EvdUtils.updateServer(this.client.getServer()));
         }
-
-        this.client.setScreen(this.parent);
     }
 
-    @Override
-    public void renderBackground(DrawContext context, int mouseX, int mouseY, float delta) {
-        this.renderBackgroundTexture(context);
+    private static class EntryListWidget extends ElementListWidget<Entry> {
+        public EntryListWidget(MinecraftClient minecraftClient, int i, int j, int k, int l) {
+            super(minecraftClient, i, j, k, l);
+        }
+
+        @Override
+        public int addEntry(EvdSettingsScreen.Entry entry) {
+            return super.addEntry(entry);
+        }
+
+        public int getRowWidth() {
+            return 310;
+        }
     }
 
-    @Override
-    public void close() {
-        this.saveChanges();
-        super.close();
+    public static abstract class Entry extends ElementListWidget.Entry<Entry> {
+        protected void setPos(Widget label, int x, int y, int height) {
+            label.setPosition(x, y + (height - label.getHeight()) / 2);
+        }
     }
 
-    @Override
-    public void renderTitle(DrawContext context, int mouseX, int mouseY, float delta) {
-        context.drawCenteredTextWithShadow(this.textRenderer, this.title, this.width / 2, 20, 16777215);
+    public static class CenteredText extends Entry {
+        private final MultilineTextWidget label;
+
+        public CenteredText(final Text text, TextRenderer renderer) {
+            this.label = new MultilineTextWidget(text, renderer);
+        }
+
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            this.label.setCentered(true);
+            this.setPos(this.label, x + (entryWidth - this.label.getWidth()) / 2, y, entryHeight);
+            this.label.render(context, mouseX, mouseY, tickDelta);
+        }
+
+        public List<? extends Element> children() {
+            return List.of(label);
+        }
+
+        public List<? extends Selectable> selectableChildren() {
+            return List.of();
+        }
+    }
+
+    public static class Separator extends Entry {
+        private final SpruceSeparatorWidget separator;
+
+        public Separator(@Nullable Text text, TextRenderer renderer) {
+            this.separator = new SpruceSeparatorWidget(text, renderer);
+        }
+
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            this.setPos(this.separator, x, y, entryHeight);
+            this.separator.setWidth(entryWidth);
+            this.separator.render(context, mouseX, mouseY, tickDelta);
+        }
+
+        public List<? extends Element> children() {
+            return List.of(this.separator);
+        }
+
+        public List<? extends Selectable> selectableChildren() {
+            return List.of();
+        }
+    }
+
+    private static class OptionEntry extends Entry {
+        private final List<ClickableWidget> widgets;
+        private final Screen screen;
+
+        OptionEntry(List<ClickableWidget> widgets, Screen screen) {
+            this.widgets = ImmutableList.copyOf(widgets);
+            this.screen = screen;
+        }
+
+        public static OptionEntry create(ClickableWidget firstWidget, @Nullable ClickableWidget secondWidget, Screen screen) {
+            return secondWidget == null
+                    ? new OptionEntry(ImmutableList.of(firstWidget), screen)
+                    : new OptionEntry(ImmutableList.of(firstWidget, secondWidget), screen);
+        }
+
+        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+            int i = 0;
+            int j = this.screen.width / 2 - 155;
+
+            for (var var13 = this.widgets.iterator(); var13.hasNext(); i += 160) {
+                var widget = var13.next();
+                this.setPos(widget, j + i, y, entryHeight);
+                widget.render(context, mouseX, mouseY, tickDelta);
+            }
+
+        }
+
+        public List<? extends Element> children() {
+            return this.widgets;
+        }
+
+        public List<? extends Selectable> selectableChildren() {
+            return this.widgets;
+        }
     }
 }

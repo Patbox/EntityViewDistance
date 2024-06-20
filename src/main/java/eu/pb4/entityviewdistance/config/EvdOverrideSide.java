@@ -31,7 +31,9 @@ public enum EvdOverrideSide {
             base.append(entry.displayName.copy().formatted(Formatting.GOLD));
             base.append(Text.literal(" - ").formatted(Formatting.GRAY));
             base.append(entry.description);
-            base.append("\n");
+            if (entry != DISABLED) {
+                base.append("\n");
+            }
         }
 
         TOOLTIP = base;

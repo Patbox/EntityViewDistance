@@ -1,10 +1,10 @@
 plugins {
-	id 'fabric-loom' version '1.4.+'
+	id 'fabric-loom' version '1.7.+'
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_21
+targetCompatibility = JavaVersion.VERSION_21
 
 archivesBaseName = project.archives_base_name
 version = project.mod_version
@@ -35,12 +35,12 @@ dependencies {
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	modImplementation include("me.lucko:fabric-permissions-api:0.1-SNAPSHOT")
 
-	modImplementation include("dev.lambdaurora:spruceui:5.0.3+1.20.4")
+	//modImplementation include("dev.lambdaurora:spruceui:5.0.3+1.20.4")
 
-	modCompileOnly("maven.modrinth:sodium:mc1.20.2-0.5.3")
+	modCompileOnly("maven.modrinth:sodium:mc1.21-0.5.9")
 	//modLocalRuntime("maven.modrinth:sodium:mc1.19-0.4.2")
 
-	modCompileOnly("com.terraformersmc:modmenu:4.0.0")
+	modCompileOnly("com.terraformersmc:modmenu:11.0.0")
 	//modLocalRuntime("com.terraformersmc:modmenu:4.0.0")
 
 }
