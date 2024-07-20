@@ -1,19 +1,19 @@
 {
-  "entityviewdistance.button.options": "Расстояние до сущностей",
-  "entityviewdistance.menu.title": "Настройки расстояния до сущностей",
+  "entityviewdistance.button.options": "Дальность обзора сущностей",
+  "entityviewdistance.menu.title": "Настройки дальности обзора сущностей",
   "entityviewdistance.menu.option.toggle": "Режим: %s",
   "entityviewdistance.menu.option.vanilla_dist": "Дальность по умолчанию: %s%%",
-  "entityviewdistance.menu.option.vanilla_dist.description": "Изменяет ванильную настройку расстояния до сущностей.\nИспользуется для сущностей со значением по умолчанию.",
-  "entityviewdistance.menu.separator.entity_options": "Настройки отдельных сущностей",
-  "entityviewdistance.menu.separator.entity_options.description": "Значения дистанции сохраняются в блоках.\n-1 задаёт значение по умолчанию.",
+  "entityviewdistance.menu.option.vanilla_dist.description": "Изменяет ванильный модификатор дальности обзора сущностей.\nИспользуется для сущностей со значением по умолчанию.",
+  "entityviewdistance.menu.separator.entity_options": "Переопределения",
+  "entityviewdistance.menu.separator.entity_options.description": "Значения дальности указываюстя в блоках.\n-1 возвращает к значению по умолчанию.",
   "entityviewdistance.menu.options.type": "%s (по умолчанию: %s блоков)",
-
-  "entityviewdistance.side.both": "клиент и сервер",
-  "entityviewdistance.side.both.desc": "пользовательские значения дальности применяются для клиента и (локального) сервера",
+  "entityviewdistance.menu.options.default": "Значение по умолчанию: %s блоков",
+  "entityviewdistance.side.both": "Клиент и сервер",
+  "entityviewdistance.side.both.desc": "Пользовательские значения дальности применяются для клиента и (локального) сервера",
   "entityviewdistance.side.client": "клиент",
-  "entityviewdistance.side.client.desc": "пользовательские значения дальности применяются только для клиента",
-  "entityviewdistance.side.server": "сервер",
-  "entityviewdistance.side.server.desc": "пользовательские значения дальности применяются только для (внутреннего/локального) сервера и игнорируются на внешних серверах",
-  "entityviewdistance.side.disabled": "отключено",
-  "entityviewdistance.side.disabled.desc": "функционирование мода отключено"
+  "entityviewdistance.side.client.desc": "Пользовательские значения дальности применяются только для клиента",
+  "entityviewdistance.side.server": "Сервер",
+  "entityviewdistance.side.server.desc": "Пользовательские значения дальности применяются только для (внутреннего/локального) сервера и игнорируются на внешних серверах",
+  "entityviewdistance.side.disabled": "Отключено",
+  "entityviewdistance.side.disabled.desc": "Функционирование мода отключено"
 }
