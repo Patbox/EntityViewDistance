@@ -1,0 +1,17 @@
+{
+  "entityviewdistance.button.options": "实体显示距离设置",
+  "entityviewdistance.menu.title": "实体显示距离设置",
+  "entityviewdistance.menu.option.toggle": "模式：%s",
+  "entityviewdistance.menu.option.vanilla_dist": "默认距离： %s%%",
+  "entityviewdistance.menu.separator.entity_options.description": "距离单位为块\n填入 -1 时将使用默认值。",
+  "entityviewdistance.menu.options.type": "%s (默认： %s 块)",
+  "entityviewdistance.menu.options.default": "默认值： %s 块",
+  "entityviewdistance.side.both": "客户端和服务端",
+  "entityviewdistance.side.both.desc": "自定义显示距离应用于客户端和（局域网）服务端",
+  "entityviewdistance.side.client": "客户端",
+  "entityviewdistance.side.client.desc": "自定义显示距离仅应用于客户端",
+  "entityviewdistance.side.server": "服务端",
+  "entityviewdistance.side.server.desc": "自定义显示距离仅适用于 (单人/局域网) 服务端并在多人游戏服务器上忽略",
+  "entityviewdistance.side.disabled": "禁用",
+  "entityviewdistance.side.disabled.desc": "禁用模组功能"
+}

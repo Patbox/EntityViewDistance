@@ -1,0 +1,19 @@
+{
+  "entityviewdistance.button.options": "實體顯示距離設定...",
+  "entityviewdistance.menu.title": "實體顯示距離設定",
+  "entityviewdistance.menu.option.toggle": "模式：%s",
+  "entityviewdistance.menu.option.vanilla_dist": "預設距離：%s%%",
+  "entityviewdistance.menu.option.vanilla_dist.description": "變更實體顯示距離調整值。\n用於具有預設值的實體。",
+  "entityviewdistance.menu.separator.entity_options": "覆蓋",
+  "entityviewdistance.menu.separator.entity_options.description": "數值以方塊為單位儲存距離。\n-1 數值會將其變更為預設值。",
+  "entityviewdistance.menu.options.type": "%s（預設：%s 個區塊）",
+  "entityviewdistance.menu.options.default": "預設值：%s 個方塊",
+  "entityviewdistance.side.both": "用戶端和伺服器",
+  "entityviewdistance.side.both.desc": "自訂顯示距離會套用於用戶端和（區域網路）伺服器。",
+  "entityviewdistance.side.client": "用戶端",
+  "entityviewdistance.side.client.desc": "自訂顯示距離僅套用於用戶端。",
+  "entityviewdistance.side.server": "伺服器",
+  "entityviewdistance.side.server.desc": "自訂顯示距離僅套用於（單人遊戲／區域網路）伺服器，並在多人伺服器上忽略。",
+  "entityviewdistance.side.disabled": "已停用",
+  "entityviewdistance.side.disabled.desc": "停用這個模組的功能。"
+}

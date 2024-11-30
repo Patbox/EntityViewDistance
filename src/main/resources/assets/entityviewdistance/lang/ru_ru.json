@@ -7,7 +7,6 @@
   "entityviewdistance.menu.separator.entity_options": "Настройки отдельных сущностей",
   "entityviewdistance.menu.separator.entity_options.description": "Значения дистанции сохраняются в блоках.\n-1 задаёт значение по умолчанию.",
   "entityviewdistance.menu.options.type": "%s (по умолчанию: %s блоков)",
-
   "entityviewdistance.side.both": "клиент и сервер",
   "entityviewdistance.side.both.desc": "пользовательские значения дальности применяются для клиента и (локального) сервера",
   "entityviewdistance.side.client": "клиент",

@@ -27,7 +27,6 @@ import java.util.List;
 import static eu.pb4.entityviewdistance.EvdUtils.getText;
 
 public class EvdSettingsScreen extends Screen {
-    public final ThreePartsLayoutWidget layout = new ThreePartsLayoutWidget(this);
     protected final Screen parent;
     protected final GameOptions gameOptions;
     @Nullable
@@ -40,32 +39,33 @@ public class EvdSettingsScreen extends Screen {
     }
 
     protected void init() {
-        this.initHeader();
-        this.initBody();
-        this.initFooter();
-        this.layout.forEachChild(this::addDrawableChild);
-        this.initTabNavigation();
+        var layout = new ThreePartsLayoutWidget(this);
+        this.initHeader(layout);
+        this.initBody(layout);
+        this.initFooter(layout);
+        this.initTabNavigation(layout);
+        layout.forEachChild(this::addDrawableChild);
     }
 
-    protected void initHeader() {
-        this.layout.addHeader(this.title, this.textRenderer);
+    protected void initHeader(ThreePartsLayoutWidget layout) {
+        layout.addHeader(this.title, this.textRenderer);
     }
 
-    protected void initBody() {
-        this.body = this.layout.addBody(new EntryListWidget(this.client, this.width, this.layout.getContentHeight(), this.layout.getHeaderHeight(), 25));
+    protected void initBody(ThreePartsLayoutWidget layout) {
+        this.body = layout.addBody(new EntryListWidget(this.client, this.width, layout.getContentHeight(), layout.getHeaderHeight(), 25));
         this.addOptions();
     }
 
-    protected void initFooter() {
-        this.layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, (button) -> {
+    protected void initFooter(ThreePartsLayoutWidget layout) {
+        layout.addFooter(ButtonWidget.builder(ScreenTexts.DONE, (button) -> {
             this.close();
         }).width(200).build());
     }
 
-    protected void initTabNavigation() {
-        this.layout.refreshPositions();
+    protected void initTabNavigation(ThreePartsLayoutWidget layout) {
+        layout.refreshPositions();
         if (this.body != null) {
-            this.body.position(this.width, this.layout);
+            this.body.position(this.width, layout);
         }
     }
 

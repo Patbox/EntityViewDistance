@@ -2,6 +2,7 @@ package eu.pb4.entityviewdistance.screen;
 
 import eu.pb4.entityviewdistance.EvdUtils;
 import eu.pb4.entityviewdistance.config.ConfigManager;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
@@ -13,6 +14,7 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableTextContent;
+import net.minecraft.util.Colors;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Language;
@@ -46,7 +48,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
         this.name = possibleName;
         this.nameString = this.name.getString();
 
-        this.label = new ScrollableTextWidget(0, 0, 100, 9, this.name.copy().formatted(Formatting.GRAY), renderer);
+        this.label = null;//= new ScrollableTextWidget(0, 20, 100, 9*2, this.name.copy().formatted(Formatting.GRAY), renderer);
 
         this.text = new TextFieldWidget(renderer, 50, 20, Text.empty()) {
             @Override
@@ -125,7 +127,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
         }).width(20).build();
         
         this.selectables = List.of(minus, text, plus);
-        this.all = List.of(label, minus, text, plus);
+        this.all = List.of(minus, text, plus);
     }
 
     private int getDefault() {
@@ -150,10 +152,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
 
     @Override
     public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-        this.label.setPosition(x, y);
-        this.setPos(this.label, x, y, entryHeight);
-        this.label.render(context, mouseX, mouseY, tickDelta);
-        this.label.setWidth(entryWidth - 25 - 55 - 25 - 5);
+        context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, this.name, x, y + entryHeight / 2 - 3, Colors.LIGHT_GRAY);
 
         this.setPos(this.plus, x + entryWidth - 25, y, entryHeight);
         this.plus.render(context, mouseX, mouseY, tickDelta);

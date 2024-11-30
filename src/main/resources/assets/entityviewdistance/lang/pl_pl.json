@@ -1,0 +1,19 @@
+{
+  "entityviewdistance.button.options": "Ustawienia odległości widoczności bytów...",
+  "entityviewdistance.menu.title": "Ustawienia odległości bytów",
+  "entityviewdistance.menu.option.toggle": "Tryb: %s",
+  "entityviewdistance.menu.option.vanilla_dist": "Domyślna odległość: %s%%",
+  "entityviewdistance.menu.option.vanilla_dist.description": "Zmienia wartość odległości renderowania z Vanilli.\nJest użyta dla bytów z domyślną wartością",
+  "entityviewdistance.menu.separator.entity_options": "Nadpisania",
+  "entityviewdistance.menu.separator.entity_options.description": "Wartości są przechowywane jako odległość w blokach.\nWartość -1 zmienia ją na domyślną wartość.",
+  "entityviewdistance.menu.options.type": "%s (Domyślnie: %s bloki)",
+  "entityviewdistance.menu.options.default": "Domyślna wartość: %s bloki",
+  "entityviewdistance.side.both": "Klient i serwer",
+  "entityviewdistance.side.both.desc": "Niestandardowa odległość widoczności jest stosowane na kliencie oraz serwerze (lan)",
+  "entityviewdistance.side.client": "Klient",
+  "entityviewdistance.side.client.desc": "Niestandardowa odległość widoku jest stosowana tylko na kliencie",
+  "entityviewdistance.side.server": "Serwer",
+  "entityviewdistance.side.server.desc": "Niestandardowa odległość widoczności jest stosowana tylko na serwerze (Tryb pojedynczego gracza/lan) i ignorowane na serwerach wieloosobowych",
+  "entityviewdistance.side.disabled": "Wyłączony",
+  "entityviewdistance.side.disabled.desc": "Wyłącza funkcjonalność moda"
+}
