@@ -1,6 +1,6 @@
 {
-  "entityviewdistance.button.options": "Configurações de distância de entidade...",
-  "entityviewdistance.menu.title": "Configurações de distância de entidade",
+  "entityviewdistance.button.options": "Distância de Entidade...",
+  "entityviewdistance.menu.title": "Distância de Entidade",
   "entityviewdistance.menu.option.toggle": "Modo: %s",
   "entityviewdistance.menu.option.vanilla_dist": "Distância padrão: %s%%",
   "entityviewdistance.menu.option.vanilla_dist.description": "Altera o modificador de distância de entidade padrão.\nÉ usado para entidades com valor padrão",

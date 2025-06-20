@@ -1,3 +1,19 @@
 {
-  "entityviewdistance.side.server": "Server"
+  "entityviewdistance.button.options": "Entität-Sichtweite-Einstellungen...",
+  "entityviewdistance.menu.title": "Entität-Sichtweite-Einstellungen",
+  "entityviewdistance.menu.option.toggle": "Modus: %s",
+  "entityviewdistance.menu.option.vanilla_dist": "Standard-Distanz: %s%%",
+  "entityviewdistance.menu.option.vanilla_dist.description": "Ändert Vanilla's Entität-Distanz-Modifikator.\nEs wird für Entitäten mit Standardwert benutzt",
+  "entityviewdistance.menu.separator.entity_options": "Überschreibungen",
+  "entityviewdistance.menu.separator.entity_options.description": "Werte werden als Distanz in Blöcken gespeichert.\nDer Wert \"-1\" nimmt den Standardwert an.",
+  "entityviewdistance.menu.options.type": "%s (Standard: %s Blöcke)",
+  "entityviewdistance.menu.options.default": "Standardwert: %s Blöcke",
+  "entityviewdistance.side.both": "Client und Server",
+  "entityviewdistance.side.both.desc": "Benutzerdefinierte Sichtweiten werden vom Client und vom (LAN) Server übernommen",
+  "entityviewdistance.side.client": "Client",
+  "entityviewdistance.side.client.desc": "Benutzerdefinierte Sichtweiten werden nur vom Client übernommen",
+  "entityviewdistance.side.server": "Server",
+  "entityviewdistance.side.server.desc": "Benutzerdefinierte Sichtweiten werden nur vom (Einzelspieler/LAN) Server übernommen und werden von Mehrspieler-Servern ignoriert",
+  "entityviewdistance.side.disabled": "Deaktiviert",
+  "entityviewdistance.side.disabled.desc": "Deaktiviert die Funktionen der Mod"
 }
