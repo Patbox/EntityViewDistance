@@ -186,7 +186,7 @@ public class EvdSettingsScreen extends Screen {
         }
 
         public List<? extends Element> children() {
-            return List.of(this.separator);
+            return List.of();
         }
 
         public List<? extends Selectable> selectableChildren() {

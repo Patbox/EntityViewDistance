@@ -64,7 +64,7 @@ public class SpruceSeparatorWidget extends AbstractTextWidget {
 				graphics.fill(this.getX(), this.getY() + 4, titleX - 5, this.getY() + 6, TEXT_COLOR);
 				graphics.fill(titleX + titleWidth + 5, this.getY() + 4, this.getX() + this.getWidth(), this.getY() + 6, TEXT_COLOR);
 			}
-			graphics.drawTextWithShadow(this.getTextRenderer(), this.title, titleX, this.getY(), 0xFFFFFF);
+			graphics.drawTextWithShadow(this.getTextRenderer(), this.title, titleX, this.getY(), 0xFFFFFFFF);
 		} else {
 			graphics.fill(this.getX(), this.getY() + 4, this.getX() + this.getWidth(), this.getY() + 6, TEXT_COLOR);
 		}

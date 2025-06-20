@@ -72,11 +72,11 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
                     var value = Integer.parseInt(input);
                     this.setValue(MathHelper.clamp(value, -1, EvdUtils.MAX_DISTANCE));
                     if (this.getValue() == -1) {
-                        text.setEditableColor(0x777777);
+                        text.setEditableColor(0xff777777);
                     } else if (value > EvdUtils.MAX_DISTANCE) {
-                        text.setEditableColor(0xff2222);
+                        text.setEditableColor(0xffff2222);
                     } else {
-                        text.setEditableColor(0xffffff);
+                        text.setEditableColor(0xffffffff);
                     }
                     //label.setText(getText("menu.options.type", this.type.getName().shallowCopy().formatted(Formatting.GRAY), this.getDefault()).formatted(Formatting.DARK_GRAY));
                 } catch (Exception e) {
@@ -105,7 +105,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
         text.setText("" + this.getValue());
 
         if (this.getValue() == -1) {
-            text.setEditableColor(0x777777);
+            text.setEditableColor(0xff777777);
         }
 
         this.text.setTooltip(Tooltip.of(getText("menu.options.default", this.getDefault())));
@@ -120,9 +120,9 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
 
         this.plus = ButtonWidget.builder (Text.literal("+"), (x) -> {
             if (Screen.hasShiftDown()) {
-                text.setText("" + (this.getValue() + 10));
+                text.setText("" + (Math.min(this.getValue(), 0) + 10));
             } else {
-                text.setText("" + (this.getValue() + 1));
+                text.setText("" + (Math.min(this.getValue(), 0) + 1));
             }
         }).width(20).build();
         
