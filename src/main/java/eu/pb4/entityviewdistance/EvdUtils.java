@@ -28,7 +28,7 @@ public class EvdUtils {
         var map = ConfigManager.getConfig().entityViewDistances;
         if (map.containsKey(identifier)) {
             var value = map.getInt(identifier);
-            ((EvdEntityType) type).evd_setTrackingDistance(MathHelper.clamp(value, -1, MAX_DISTANCE));
+            ((EvdEntityType) type).evd_setTrackingDistance(Math.max(value, -1));
         }
     }
 
@@ -38,7 +38,7 @@ public class EvdUtils {
         for (var entry : Registries.ENTITY_TYPE) {
             var identifier = Registries.ENTITY_TYPE.getId(entry);
             var value = map.getOrDefault(identifier, -1);
-            ((EvdEntityType) entry).evd_setTrackingDistance(MathHelper.clamp(value, -1, MAX_DISTANCE));
+            ((EvdEntityType) entry).evd_setTrackingDistance(Math.max(value, -1));
         }
     }
 
