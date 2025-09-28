@@ -157,10 +157,11 @@ public class EvdSettingsScreen extends Screen {
             this.label = new MultilineTextWidget(text, renderer);
         }
 
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        @Override
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             this.label.setCentered(true);
-            this.setPos(this.label, x + (entryWidth - this.label.getWidth()) / 2, y, entryHeight);
-            this.label.render(context, mouseX, mouseY, tickDelta);
+            this.setPos(this.label, this.getX() + (this.getWidth() - this.label.getWidth()) / 2, this.getY(), this.getHeight());
+            this.label.render(context, mouseX, mouseY, deltaTicks);
         }
 
         public List<? extends Element> children() {
@@ -192,6 +193,19 @@ public class EvdSettingsScreen extends Screen {
         public List<? extends Selectable> selectableChildren() {
             return List.of();
         }
+
+        @Override
+        public int getHeight() {
+            return this.separator.getHeight();
+        }
+
+        @Override
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+            //this.setPos(this.separator, x, y, entryHeight);
+            this.separator.setWidth(this.getWidth());
+            this.separator.setPosition(this.getX(), this.getY());
+            this.separator.render(context, mouseX, mouseY, deltaTicks);
+        }
     }
 
     private static class OptionEntry extends Entry {
@@ -209,14 +223,16 @@ public class EvdSettingsScreen extends Screen {
                     : new OptionEntry(ImmutableList.of(firstWidget, secondWidget), screen);
         }
 
-        public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        @Override
+        public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             int i = 0;
             int j = this.screen.width / 2 - 155;
 
             for (var var13 = this.widgets.iterator(); var13.hasNext(); i += 160) {
                 var widget = var13.next();
-                this.setPos(widget, j + i, y, entryHeight);
-                widget.render(context, mouseX, mouseY, tickDelta);
+                this.setPos(widget, j + i, this.getY(), this.getHeight());
+                widget.setY(this.getY());
+                widget.render(context, mouseX, mouseY, deltaTicks);
             }
 
         }

@@ -1,1 +1,19 @@
-{}
+{
+  "entityviewdistance.button.options": "Налаштування дальности видимости сутностей…",
+  "entityviewdistance.menu.title": "Налаштування дальности видимости сутностей",
+  "entityviewdistance.menu.option.toggle": "Режим: %s",
+  "entityviewdistance.menu.option.vanilla_dist": "Усталена дальність: %s%%",
+  "entityviewdistance.menu.option.vanilla_dist.description": "Змінює стандартне значення дальности видимости сутностей.\nВикористовується для сутностей з усталеним значенням.",
+  "entityviewdistance.menu.separator.entity_options": "Перевизначення",
+  "entityviewdistance.menu.separator.entity_options.description": "Значення зберігаються як відстань у блоках.\nЗначення -1 змінює його на усталене значення.",
+  "entityviewdistance.menu.options.type": "%s (Усталено: %s блоків)",
+  "entityviewdistance.menu.options.default": "Усталене значення: %s блоків",
+  "entityviewdistance.side.both": "Клієнт і сервер",
+  "entityviewdistance.side.both.desc": "Власні дальности видимості застосовуються до клієнта та (LAN) сервера.",
+  "entityviewdistance.side.client": "Клієнт",
+  "entityviewdistance.side.client.desc": "Власні дальності видимості застосовуються лише до клієнта.",
+  "entityviewdistance.side.server": "Сервер",
+  "entityviewdistance.side.server.desc": "Користувальницькі відстані перегляду застосовуються лише на сервері (для гри наодинці/LAN) та ігноруються на серверах для гри в мережі.",
+  "entityviewdistance.side.disabled": "Вимкнено",
+  "entityviewdistance.side.disabled.desc": "Вимикає функції мода."
+}

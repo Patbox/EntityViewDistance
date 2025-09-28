@@ -10,6 +10,7 @@ import net.minecraft.client.gui.Selectable;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.tooltip.Tooltip;
 import net.minecraft.client.gui.widget.*;
+import net.minecraft.client.option.SimpleOption;
 import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.text.Text;
@@ -69,11 +70,17 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
         text.setChangedListener((input) -> {
             if (!input.isEmpty() && !input.equals("-")) {
                 try {
+                    var maxDistance = EvdUtils.MAX_DISTANCE;
+
+                    if (MinecraftClient.getInstance().options.getViewDistance().getCallbacks() instanceof SimpleOption.ValidatingIntSliderCallbacks callbacks) {
+                        maxDistance = callbacks.maxInclusive() * 16;
+                    }
+
                     var value = Integer.parseInt(input);
-                    this.setValue(MathHelper.clamp(value, -1, EvdUtils.MAX_DISTANCE));
+                    this.setValue(MathHelper.clamp(value, -1, maxDistance));
                     if (this.getValue() == -1) {
                         text.setEditableColor(0xff777777);
-                    } else if (value > EvdUtils.MAX_DISTANCE) {
+                    } else if (value > maxDistance) {
                         text.setEditableColor(0xffff2222);
                     } else {
                         text.setEditableColor(0xffffffff);
@@ -110,8 +117,8 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
 
         this.text.setTooltip(Tooltip.of(getText("menu.options.default", this.getDefault())));
 
-        this.minus = ButtonWidget.builder (Text.literal("-"), (x) -> {
-            if (Screen.hasShiftDown()) {
+        this.minus = ButtonWidget.builder(Text.literal("-"), (x) -> {
+            if (MinecraftClient.getInstance().isShiftPressed()) {
                 text.setText("" + (this.getValue() - 10));
             } else {
                 text.setText("" + (this.getValue() - 1));
@@ -119,10 +126,10 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
         }).width(20).build();
 
         this.plus = ButtonWidget.builder (Text.literal("+"), (x) -> {
-            if (Screen.hasShiftDown()) {
-                text.setText("" + (Math.min(this.getValue(), 0) + 10));
+            if (MinecraftClient.getInstance().isShiftPressed()) {
+                text.setText("" + (Math.max(this.getValue(), 0) + 10));
             } else {
-                text.setText("" + (Math.min(this.getValue(), 0) + 1));
+                text.setText("" + (Math.max(this.getValue(), 0) + 1));
             }
         }).width(20).build();
         
@@ -150,23 +157,19 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
         return this.getValue() != 0 ? getText("menu.options.type.status.active").formatted(Formatting.GREEN) : getText("menu.options.type.status.default").formatted(Formatting.RED);
     }
 
-    @Override
-    public void render(DrawContext context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
-        context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, this.name, x, y + entryHeight / 2 - 3, Colors.LIGHT_GRAY);
-
-        this.setPos(this.plus, x + entryWidth - 25, y, entryHeight);
-        this.plus.render(context, mouseX, mouseY, tickDelta);
-
-        this.setPos(this.text, x + entryWidth - 25 - 55, y, entryHeight);
-        this.text.render(context, mouseX, mouseY, tickDelta);
-
-        this.setPos(this.minus, x + entryWidth - 25 - 55 - 25, y, entryHeight);
-        this.minus.render(context, mouseX, mouseY, tickDelta);
-    }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        return super.mouseClicked(mouseX, mouseY, button);
+    public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, this.name, this.getX(), this.getY() + this.getHeight() / 2 - 3, Colors.LIGHT_GRAY);
+
+        this.setPos(this.plus,  this.getX() + this.getWidth() - 25, this.getY(), this.getHeight());
+        this.plus.render(context, mouseX, mouseY, deltaTicks);
+
+        this.setPos(this.text, this.getX() + this.getWidth() - 25 - 55, this.getY(), this.getHeight());
+        this.text.render(context, mouseX, mouseY, deltaTicks);
+
+        this.setPos(this.minus, this.getX() + this.getWidth() - 25 - 55 - 25, this.getY(), this.getHeight());
+        this.minus.render(context, mouseX, mouseY, deltaTicks);
     }
 
     @Override

@@ -26,7 +26,7 @@ import static net.minecraft.server.command.CommandManager.literal;
 public class EvdCommands {
     public static final Predicate<ServerCommandSource> IS_HOST = source -> {
         var player = source.getPlayer();
-        return player != null && source.getServer().isHost(player.getGameProfile());
+        return player != null && source.getServer().isHost(player.getPlayerConfigEntry());
     };
 
     public static void register() {

@@ -3,6 +3,8 @@
   "entityviewdistance.menu.title": "实体显示距离设置",
   "entityviewdistance.menu.option.toggle": "模式：%s",
   "entityviewdistance.menu.option.vanilla_dist": "默认距离： %s%%",
+  "entityviewdistance.menu.option.vanilla_dist.description": "修改原版实体距离修改器。\n适用于具有默认值的实体",
+  "entityviewdistance.menu.separator.entity_options": "更改",
   "entityviewdistance.menu.separator.entity_options.description": "距离单位为块\n填入 -1 时将使用默认值。",
   "entityviewdistance.menu.options.type": "%s (默认： %s 块)",
   "entityviewdistance.menu.options.default": "默认值： %s 块",
