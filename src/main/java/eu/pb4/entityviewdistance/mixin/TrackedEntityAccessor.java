@@ -1,17 +1,17 @@
 package eu.pb4.entityviewdistance.mixin;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.server.world.ServerChunkLoadingManager;
+import net.minecraft.server.level.ChunkMap;
+import net.minecraft.world.entity.Entity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
-@Mixin(ServerChunkLoadingManager.EntityTracker.class)
-public interface EntityTrackerAccessor {
+@Mixin(ChunkMap.TrackedEntity.class)
+public interface TrackedEntityAccessor {
     @Accessor
     Entity getEntity();
 
     @Mutable
     @Accessor
-    void setMaxDistance(int maxDistance);
+    void setRange(int maxDistance);
 }

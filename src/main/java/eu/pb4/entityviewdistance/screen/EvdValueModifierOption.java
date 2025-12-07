@@ -2,25 +2,25 @@ package eu.pb4.entityviewdistance.screen;
 
 import eu.pb4.entityviewdistance.EvdUtils;
 import eu.pb4.entityviewdistance.config.ConfigManager;
-import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.font.TextRenderer;
-import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.Selectable;
-import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.gui.tooltip.Tooltip;
-import net.minecraft.client.gui.widget.*;
-import net.minecraft.client.option.SimpleOption;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableTextContent;
-import net.minecraft.util.Colors;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.Language;
-import net.minecraft.util.math.MathHelper;
-
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.OptionInstance;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.FittingMultiLineTextWidget;
+import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.locale.Language;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.CommonColors;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.EntityType;
 import java.util.List;
 
 import static eu.pb4.entityviewdistance.EvdUtils.getText;
@@ -29,61 +29,61 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
 
     private final EntityType<?> type;
     private final Identifier identifier;
-    private final Text name;
+    private final Component name;
     public final String nameString;
 
-    private final List<Selectable> selectables;
-    private final List<Element> all;
-    private final ButtonWidget plus;
-    private final TextFieldWidget text;
-    private final ButtonWidget minus;
-    private final ScrollableTextWidget label;
+    private final List<NarratableEntry> selectables;
+    private final List<GuiEventListener> all;
+    private final Button plus;
+    private final EditBox text;
+    private final Button minus;
+    private final FittingMultiLineTextWidget label;
 
-    public EvdValueModifierOption(EntityType<?> type, TextRenderer renderer) {
+    public EvdValueModifierOption(EntityType<?> type, Font renderer) {
         this.type = type;
-        this.identifier = Registries.ENTITY_TYPE.getId(type);
-        var possibleName = this.type.getName();
-        if (possibleName.getContent() instanceof TranslatableTextContent text && !Language.getInstance().hasTranslation(text.getKey())) {
-            possibleName = Text.literal(Registries.ENTITY_TYPE.getId(this.type).toString());
+        this.identifier = BuiltInRegistries.ENTITY_TYPE.getKey(type);
+        var possibleName = this.type.getDescription();
+        if (possibleName.getContents() instanceof TranslatableContents text && !Language.getInstance().has(text.getKey())) {
+            possibleName = Component.literal(BuiltInRegistries.ENTITY_TYPE.getKey(this.type).toString());
         }
         this.name = possibleName;
         this.nameString = this.name.getString();
 
         this.label = null;//= new ScrollableTextWidget(0, 20, 100, 9*2, this.name.copy().formatted(Formatting.GRAY), renderer);
 
-        this.text = new TextFieldWidget(renderer, 50, 20, Text.empty()) {
+        this.text = new EditBox(renderer, 50, 20, Component.empty()) {
             @Override
             public void setFocused(boolean focused) {
                 super.setFocused(focused);
                 if (!focused) {
-                    if (this.getText().isEmpty() || this.getText().equals("-")) {
-                        this.setText("-1");
+                    if (this.getValue().isEmpty() || this.getValue().equals("-")) {
+                        this.setValue("-1");
                     }
                 } else {
-                    if (this.getText().equals("-1")) {
-                        this.setText("");
+                    if (this.getValue().equals("-1")) {
+                        this.setValue("");
                     }
                 }
             }
         };
 
-        text.setChangedListener((input) -> {
+        text.setResponder((input) -> {
             if (!input.isEmpty() && !input.equals("-")) {
                 try {
                     var maxDistance = EvdUtils.MAX_DISTANCE;
 
-                    if (MinecraftClient.getInstance().options.getViewDistance().getCallbacks() instanceof SimpleOption.ValidatingIntSliderCallbacks callbacks) {
+                    if (Minecraft.getInstance().options.renderDistance().values() instanceof OptionInstance.IntRange callbacks) {
                         maxDistance = callbacks.maxInclusive() * 16;
                     }
 
                     var value = Integer.parseInt(input);
-                    this.setValue(MathHelper.clamp(value, -1, maxDistance));
+                    this.setValue(Mth.clamp(value, -1, maxDistance));
                     if (this.getValue() == -1) {
-                        text.setEditableColor(0xff777777);
+                        text.setTextColor(0xff777777);
                     } else if (value > maxDistance) {
-                        text.setEditableColor(0xffff2222);
+                        text.setTextColor(0xffff2222);
                     } else {
-                        text.setEditableColor(0xffffffff);
+                        text.setTextColor(0xffffffff);
                     }
                     //label.setText(getText("menu.options.type", this.type.getName().shallowCopy().formatted(Formatting.GRAY), this.getDefault()).formatted(Formatting.DARK_GRAY));
                 } catch (Exception e) {
@@ -92,7 +92,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
             }
         });
 
-        text.setTextPredicate((input) -> {
+        text.setFilter((input) -> {
             if (input.isEmpty() || input.equals("-")) {
                 return true;
             }
@@ -109,27 +109,27 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
             return false;
         });
 
-        text.setText("" + this.getValue());
+        text.setValue("" + this.getValue());
 
         if (this.getValue() == -1) {
-            text.setEditableColor(0xff777777);
+            text.setTextColor(0xff777777);
         }
 
-        this.text.setTooltip(Tooltip.of(getText("menu.options.default", this.getDefault())));
+        this.text.setTooltip(Tooltip.create(getText("menu.options.default", this.getDefault())));
 
-        this.minus = ButtonWidget.builder(Text.literal("-"), (x) -> {
-            if (MinecraftClient.getInstance().isShiftPressed()) {
-                text.setText("" + (this.getValue() - 10));
+        this.minus = Button.builder(Component.literal("-"), (x) -> {
+            if (Minecraft.getInstance().hasShiftDown()) {
+                text.setValue("" + (this.getValue() - 10));
             } else {
-                text.setText("" + (this.getValue() - 1));
+                text.setValue("" + (this.getValue() - 1));
             }
         }).width(20).build();
 
-        this.plus = ButtonWidget.builder (Text.literal("+"), (x) -> {
-            if (MinecraftClient.getInstance().isShiftPressed()) {
-                text.setText("" + (Math.max(this.getValue(), 0) + 10));
+        this.plus = Button.builder (Component.literal("+"), (x) -> {
+            if (Minecraft.getInstance().hasShiftDown()) {
+                text.setValue("" + (Math.max(this.getValue(), 0) + 10));
             } else {
-                text.setText("" + (Math.max(this.getValue(), 0) + 1));
+                text.setValue("" + (Math.max(this.getValue(), 0) + 1));
             }
         }).width(20).build();
         
@@ -138,7 +138,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
     }
 
     private int getDefault() {
-        return this.type.getMaxTrackDistance() * 16;
+        return this.type.clientTrackingRange() * 16;
     }
 
     private int getValue() {
@@ -153,14 +153,14 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
         }
     }
 
-    private Text getActiveText() {
-        return this.getValue() != 0 ? getText("menu.options.type.status.active").formatted(Formatting.GREEN) : getText("menu.options.type.status.default").formatted(Formatting.RED);
+    private Component getActiveText() {
+        return this.getValue() != 0 ? getText("menu.options.type.status.active").withStyle(ChatFormatting.GREEN) : getText("menu.options.type.status.default").withStyle(ChatFormatting.RED);
     }
 
 
     @Override
-    public void render(DrawContext context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-        context.drawTextWithShadow(MinecraftClient.getInstance().textRenderer, this.name, this.getX(), this.getY() + this.getHeight() / 2 - 3, Colors.LIGHT_GRAY);
+    public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        context.drawString(Minecraft.getInstance().font, this.name, this.getX(), this.getY() + this.getHeight() / 2 - 3, CommonColors.LIGHT_GRAY);
 
         this.setPos(this.plus,  this.getX() + this.getWidth() - 25, this.getY(), this.getHeight());
         this.plus.render(context, mouseX, mouseY, deltaTicks);
@@ -173,12 +173,12 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
     }
 
     @Override
-    public List<? extends Selectable> selectableChildren() {
+    public List<? extends NarratableEntry> narratables() {
         return this.selectables;
     }
 
     @Override
-    public List<? extends Element> children() {
+    public List<? extends GuiEventListener> children() {
         return this.all;
     }
 }

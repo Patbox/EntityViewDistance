@@ -2,22 +2,21 @@ package eu.pb4.entityviewdistance;
 
 import eu.pb4.entityviewdistance.config.ConfigManager;
 import eu.pb4.entityviewdistance.interfaces.EvdEntityType;
-import eu.pb4.entityviewdistance.mixin.EntityTrackerAccessor;
-import eu.pb4.entityviewdistance.mixin.ServerChunkLoadingManagerAccessor;
-import net.minecraft.entity.EntityType;
-import net.minecraft.registry.Registries;
+import eu.pb4.entityviewdistance.mixin.TrackedEntityAccessor;
+import eu.pb4.entityviewdistance.mixin.ChunkMapAccessor;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.entity.EntityType;
 
 public class EvdUtils {
     public static final String BUTTON_TEXT = getKey("button.options");
     public static final int MAX_DISTANCE = 32 * 16;
 
-    public static MutableText getText(String type, Object... obj) {
-        return Text.translatable("entityviewdistance" + "." + type, obj);
+    public static MutableComponent getText(String type, Object... obj) {
+        return Component.translatable("entityviewdistance" + "." + type, obj);
     }
 
     public static String getKey(String type) {
@@ -35,8 +34,8 @@ public class EvdUtils {
     public static void updateAll() {
         var map = ConfigManager.getConfig().entityViewDistances;
 
-        for (var entry : Registries.ENTITY_TYPE) {
-            var identifier = Registries.ENTITY_TYPE.getId(entry);
+        for (var entry : BuiltInRegistries.ENTITY_TYPE) {
+            var identifier = BuiltInRegistries.ENTITY_TYPE.getKey(entry);
             var value = map.getOrDefault(identifier, -1);
             ((EvdEntityType) entry).evd_setTrackingDistance(Math.max(value, -1));
         }
@@ -45,15 +44,15 @@ public class EvdUtils {
     public static void updateServer(MinecraftServer server) {
         boolean apply = ConfigManager.getConfig().mode.server;
 
-        for (var world :server.getWorlds()) {
-            for (var entry : ((ServerChunkLoadingManagerAccessor) world.getChunkManager().chunkLoadingManager).getEntityTrackers().int2ObjectEntrySet()) {
-                var tracker = (EntityTrackerAccessor) entry.getValue();
+        for (var world :server.getAllLevels()) {
+            for (var entry : ((ChunkMapAccessor) world.getChunkSource().chunkMap).getEntityMap().int2ObjectEntrySet()) {
+                var tracker = (TrackedEntityAccessor) entry.getValue();
 
                 var entity = tracker.getEntity();
 
                 var value = apply ? ((EvdEntityType) entity.getType()).evd_getTrackingDistance() : -1;
 
-                tracker.setMaxDistance(value > -1 ? Math.max(1, value) : entity.getType().getMaxTrackDistance() * 16);
+                tracker.setRange(value > -1 ? Math.max(1, value) : entity.getType().clientTrackingRange() * 16);
             }
         }
     }

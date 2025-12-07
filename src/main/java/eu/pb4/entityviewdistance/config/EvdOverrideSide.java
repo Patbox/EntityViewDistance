@@ -1,9 +1,9 @@
 package eu.pb4.entityviewdistance.config;
 
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
-
 import static eu.pb4.entityviewdistance.EvdUtils.getText;
+
+import net.minecraft.ChatFormatting;
+import net.minecraft.network.chat.Component;
 
 public enum EvdOverrideSide {
     BOTH(true, true, getText("side.both"), getText("side.both.desc")),
@@ -11,13 +11,13 @@ public enum EvdOverrideSide {
     SERVER(false, true, getText("side.server"), getText("side.server.desc")),
     DISABLED(false, false, getText("side.disabled"), getText("side.disabled.desc"));
 
-    public static final Text TOOLTIP;
-    public final Text description;
+    public static final Component TOOLTIP;
+    public final Component description;
     public final boolean client;
     public final boolean server;
-    public final Text displayName;
+    public final Component displayName;
 
-    EvdOverrideSide(boolean client, boolean server, Text name, Text description) {
+    EvdOverrideSide(boolean client, boolean server, Component name, Component description) {
         this.client = client;
         this.server = server;
         this.description = description;
@@ -25,11 +25,11 @@ public enum EvdOverrideSide {
     }
 
     static {
-        var base = Text.empty();
+        var base = Component.empty();
 
         for (var entry : EvdOverrideSide.values()) {
-            base.append(entry.displayName.copy().formatted(Formatting.GOLD));
-            base.append(Text.literal(" - ").formatted(Formatting.GRAY));
+            base.append(entry.displayName.copy().withStyle(ChatFormatting.GOLD));
+            base.append(Component.literal(" - ").withStyle(ChatFormatting.GRAY));
             base.append(entry.description);
             if (entry != DISABLED) {
                 base.append("\n");

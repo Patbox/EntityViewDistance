@@ -5,14 +5,14 @@
   "compatibilityLevel": "JAVA_16",
   "mixins": [
     "EntityMixin",
-    "EntityTrackerAccessor",
+    "TrackedEntityAccessor",
     "EntityTypeMixin",
-    "ServerChunkLoadingManagerAccessor",
-    "ServerChunkLoadingManagerMixin"
+    "ChunkMapAccessor",
+    "ChunkMapMixin"
   ],
   "client": [
     "client.EntityRenderDispatcherMixin",
-    "client.VideoOptionsScreenMixin"
+    "client.VideoSettingsScreenMixin"
   ],
   "injectors": {
     "defaultRequire": 0

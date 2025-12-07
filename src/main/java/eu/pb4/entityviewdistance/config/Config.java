@@ -5,9 +5,8 @@ import eu.pb4.entityviewdistance.EVDMod;
 import eu.pb4.entityviewdistance.config.data.ConfigData;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import net.minecraft.util.Identifier;
-
 import java.util.Locale;
+import net.minecraft.resources.Identifier;
 
 
 public final class Config {
