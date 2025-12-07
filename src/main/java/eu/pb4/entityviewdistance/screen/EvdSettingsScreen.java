@@ -14,15 +14,21 @@ import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.*;
 import net.minecraft.client.option.GameOptions;
 import net.minecraft.client.option.SimpleOption;
+import net.minecraft.entity.EntityType;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.RegistryKeys;
+import net.minecraft.registry.tag.TagKey;
 import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
+import java.util.function.Predicate;
 
 import static eu.pb4.entityviewdistance.EvdUtils.getText;
 
@@ -31,6 +37,7 @@ public class EvdSettingsScreen extends Screen {
     protected final GameOptions gameOptions;
     @Nullable
     private EntryListWidget body;
+    private TextFieldWidget searchStringWidget;
 
     public EvdSettingsScreen(@Nullable Screen parent, GameOptions options) {
         super(Text.translatable("entityviewdistance.menu.title"));
@@ -49,11 +56,15 @@ public class EvdSettingsScreen extends Screen {
 
     protected void initHeader(ThreePartsLayoutWidget layout) {
         layout.addHeader(this.title, this.textRenderer);
+        this.searchStringWidget = new TextFieldWidget(this.textRenderer, 0, 0, 310 / 3, 20, this.searchStringWidget, Text.translatable("debug.options.search").fillStyle(TextFieldWidget.SEARCH_STYLE));
+        this.searchStringWidget.setChangedListener(this::updateOptions);
+        this.searchStringWidget.setPlaceholder(Text.translatable("debug.options.search").fillStyle(TextFieldWidget.SEARCH_STYLE));
+        layout.addHeader(this.searchStringWidget, x -> x.alignRight().marginRight(Math.max(10, ((this.width - 310) / 2) - 30)));
     }
 
     protected void initBody(ThreePartsLayoutWidget layout) {
         this.body = layout.addBody(new EntryListWidget(this.client, this.width, layout.getContentHeight(), layout.getHeaderHeight(), 25));
-        this.addOptions();
+        this.updateOptions(this.searchStringWidget.getText());
     }
 
     protected void initFooter(ThreePartsLayoutWidget layout) {
@@ -78,15 +89,16 @@ public class EvdSettingsScreen extends Screen {
         this.client.setScreen(this.parent);
     }
 
-    protected void addOptions() {
+    protected void updateOptions(String search) {
         assert this.body != null;
         var scale = gameOptions.getEntityDistanceScaling();
 
+        this.body.clearEntries();
+
         this.body.addEntry(OptionEntry.create(
-                        CyclingButtonWidget.builder((EvdOverrideSide value) -> getText("menu.option.toggle", value.displayName))
+                        CyclingButtonWidget.builder((EvdOverrideSide value) -> getText("menu.option.toggle", value.displayName), ConfigManager.getConfig().mode)
                                 .values(List.of(EvdOverrideSide.values()))
                                 .tooltip(SimpleOption.constantTooltip(EvdOverrideSide.TOOLTIP))
-                                .initially(ConfigManager.getConfig().mode)
                                 .omitKeyText()
                                 .build(0, 0, 150, 20, getText("menu.option.toggle"), (button, value) -> {
                                     ConfigManager.getConfig().mode = value;
@@ -105,8 +117,33 @@ public class EvdSettingsScreen extends Screen {
 
         var entries = new ArrayList<EvdValueModifierOption>();
 
+        Predicate<EntityType<?>> predicate;
+
+        search = search.toLowerCase(Locale.ROOT);
+        if (search.isEmpty()) {
+            predicate = entry -> true;
+        } else if (search.startsWith("#")) {
+            var id = Identifier.tryParse(search.substring(1));
+            if (id != null) {
+                var tag = TagKey.of(RegistryKeys.ENTITY_TYPE, id);
+                predicate = entry -> entry.isIn(tag);
+            } else {
+                String finalSearch = search;
+                predicate = entry -> entry.getName().getString().toLowerCase(Locale.ROOT).contains(finalSearch);
+            }
+        } else if (search.startsWith("@")) {
+            var namespace = search.substring(1);
+            predicate = entry -> entry.getRegistryEntry().getKey().orElseThrow().getValue().getNamespace().contains(namespace);
+        } else if (search.startsWith("$")) {
+            var namespace = search.substring(1);
+            predicate = entry -> entry.getRegistryEntry().getKey().orElseThrow().getValue().getPath().contains(namespace);
+        } else {
+            String finalSearch = search;
+            predicate = entry -> entry.getName().getString().toLowerCase(Locale.ROOT).contains(finalSearch);
+        }
+
         for (var entry : Registries.ENTITY_TYPE) {
-            if (entry.getMaxTrackDistance() == 0) {
+            if (entry.getMaxTrackDistance() == 0 || !predicate.test(entry)) {
                 continue;
             }
 
@@ -117,7 +154,6 @@ public class EvdSettingsScreen extends Screen {
         for (var entry : entries) {
             this.body.addEntry(entry);
         }
-
     }
 
     private void saveChanges() {
@@ -137,6 +173,11 @@ public class EvdSettingsScreen extends Screen {
         @Override
         public int addEntry(EvdSettingsScreen.Entry entry) {
             return super.addEntry(entry);
+        }
+
+        @Override
+        public void clearEntries() {
+            super.clearEntries();
         }
 
         public int getRowWidth() {

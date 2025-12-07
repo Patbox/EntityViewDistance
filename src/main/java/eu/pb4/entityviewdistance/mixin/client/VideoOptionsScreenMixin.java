@@ -21,7 +21,7 @@ import java.util.function.Function;
 @Mixin(VideoOptionsScreen.class)
 public class VideoOptionsScreenMixin {
 
-    @Redirect(method = "getOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getEntityDistanceScaling()Lnet/minecraft/client/option/SimpleOption;"))
+    @Redirect(method = "getQualityOptions", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/option/GameOptions;getEntityDistanceScaling()Lnet/minecraft/client/option/SimpleOption;"))
     private static SimpleOption<?> entityViewDistance_addOptionButton(GameOptions instance) {
         return new SimpleOption<>(EvdUtils.BUTTON_TEXT, SimpleOption.emptyTooltip(), (x, y) -> Text.empty(), new SimpleOption.Callbacks<>() {
             @Override
