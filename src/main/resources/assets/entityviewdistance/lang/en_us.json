@@ -1,5 +1,6 @@
 {
   "entityviewdistance.button.options": "Entity View Distance Settings...",
+  "entityviewdistance.button.options.sodium": "Mod Settings...",
   "entityviewdistance.menu.title": "Entity View Distance Settings",
   "entityviewdistance.menu.option.toggle": "Mode: %s",
   "entityviewdistance.menu.option.vanilla_dist": "Default Distance: %s%%",
