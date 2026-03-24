@@ -2,9 +2,8 @@ package eu.pb4.entityviewdistance;
 
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import eu.pb4.entityviewdistance.config.ConfigManager;
-import me.lucko.fabric.api.permissions.v0.Permissions;
+import eu.pb4.entityviewdistance.modcompat.FabricPermissionBridge;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.minecraft.ChatFormatting;
 import net.minecraft.commands.CommandSourceStack;
@@ -14,11 +13,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.permissions.PermissionLevel;
 import net.minecraft.util.Mth;
 import java.util.Locale;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static eu.pb4.entityviewdistance.EvdUtils.id;
 import static net.minecraft.commands.Commands.argument;
 import static net.minecraft.commands.Commands.literal;
 
@@ -32,16 +33,16 @@ public class EvdCommands {
         CommandRegistrationCallback.EVENT.register((dispatcher, access, environment) -> {
             dispatcher.register(
                     literal("entityviewdistance")
-                            .requires(Permissions.require("entityviewdistance.main", true))
+                            .requires(FabricPermissionBridge.require(id("main"), true))
                             .executes(EvdCommands::about)
 
                             .then(literal("reload")
-                                    .requires(Permissions.require("entityviewdistance.reload", 3).or(IS_HOST))
+                                    .requires(FabricPermissionBridge.require(id("reload"), PermissionLevel.ADMINS).or(IS_HOST))
                                     .executes(EvdCommands::reloadConfig)
                             )
 
                             .then(literal("values")
-                                    .requires(Permissions.require("entityviewdistance.set", 3).or(IS_HOST))
+                                    .requires(FabricPermissionBridge.require(id("set"), PermissionLevel.ADMINS).or(IS_HOST))
                                     .then(argument("entity", IdentifierArgument.id())
                                             .suggests((ctx, builder) -> {
                                                 var remaining = builder.getRemaining().toLowerCase(Locale.ROOT);

@@ -9,11 +9,11 @@
 
 package eu.pb4.entityviewdistance.screen;
 
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.narration.NarratedElementType;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
@@ -60,7 +60,7 @@ public class SpruceSeparatorWidget extends AbstractWidget {
 	/* Rendering */
 
 	@Override
-	protected void renderWidget(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+	public void extractWidgetRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
 		if (this.title != null) {
 			int titleWidth = this.renderer.width(this.title);
 			int titleX = this.getX() + (this.getWidth() / 2 - titleWidth / 2);
@@ -68,7 +68,7 @@ public class SpruceSeparatorWidget extends AbstractWidget {
 				graphics.fill(this.getX(), this.getY() + 4, titleX - 5, this.getY() + 6, TEXT_COLOR);
 				graphics.fill(titleX + titleWidth + 5, this.getY() + 4, this.getX() + this.getWidth(), this.getY() + 6, TEXT_COLOR);
 			}
-			graphics.drawString(this.renderer, this.title, titleX, this.getY(), 0xFFFFFFFF);
+			graphics.text(this.renderer, this.title, titleX, this.getY(), 0xFFFFFFFF);
 		} else {
 			graphics.fill(this.getX(), this.getY() + 4, this.getX() + this.getWidth(), this.getY() + 6, TEXT_COLOR);
 		}

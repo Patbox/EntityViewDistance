@@ -2,11 +2,12 @@ package eu.pb4.entityviewdistance.screen;
 
 import eu.pb4.entityviewdistance.EvdUtils;
 import eu.pb4.entityviewdistance.config.ConfigManager;
+import eu.pb4.entityviewdistance.mixin.EditBoxAccessor;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.FittingMultiLineTextWidget;
@@ -20,8 +21,10 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
+import net.minecraft.util.StringUtil;
 import net.minecraft.world.entity.EntityType;
 import java.util.List;
+import java.util.function.Predicate;
 
 import static eu.pb4.entityviewdistance.EvdUtils.getText;
 
@@ -51,7 +54,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
 
         this.label = null;//= new ScrollableTextWidget(0, 20, 100, 9*2, this.name.copy().formatted(Formatting.GRAY), renderer);
 
-        this.text = new EditBox(renderer, 50, 20, Component.empty()) {
+        var text = new EditBox(renderer, 50, 20, Component.empty()) {
             @Override
             public void setFocused(boolean focused) {
                 super.setFocused(focused);
@@ -65,7 +68,40 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
                     }
                 }
             }
+
+            private Predicate<String> filter;
+
+            @Override
+            public void insertText(String input) {
+                var highlightPos = ((EditBoxAccessor) (Object) this).sim_getHighlightPos();
+                var maxLength = ((EditBoxAccessor) (Object) this).sim_getMaxLength();
+                int start = Math.min(this.getCursorPosition(), highlightPos);
+                int end = Math.max(this.getCursorPosition(), highlightPos);
+                int maxInsertionLength = maxLength - this.getValue().length() - (start - end);
+                if (maxInsertionLength > 0) {
+                    String text = StringUtil.filterText(input);
+                    int insertionLength = text.length();
+                    if (maxInsertionLength < insertionLength) {
+                        if (Character.isHighSurrogate(text.charAt(maxInsertionLength - 1))) {
+                            --maxInsertionLength;
+                        }
+
+                        text = text.substring(0, maxInsertionLength);
+                        insertionLength = maxInsertionLength;
+                    }
+
+                    var newValue = (new StringBuilder(this.getValue())).replace(start, end, text).toString();
+
+                    if (this.filter.test(newValue)) {
+                        ((EditBoxAccessor) (Object) this).sim_setValue(newValue);
+                        this.setCursorPosition(start + insertionLength);
+                        this.setHighlightPos(this.getCursorPosition());
+                        ((EditBoxAccessor) (Object) this).sim_onValueChange(this.getValue());
+                    }
+                }
+            }
         };
+        this.text = text;
 
         text.setResponder((input) -> {
             if (!input.isEmpty() && !input.equals("-")) {
@@ -92,7 +128,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
             }
         });
 
-        text.setFilter((input) -> {
+        text.filter = (input) -> {
             if (input.isEmpty() || input.equals("-")) {
                 return true;
             }
@@ -107,7 +143,7 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
             }
 
             return false;
-        });
+        };
 
         text.setValue("" + this.getValue());
 
@@ -159,17 +195,17 @@ public class EvdValueModifierOption extends EvdSettingsScreen.Entry {
 
 
     @Override
-    public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
-        context.drawString(Minecraft.getInstance().font, this.name, this.getX(), this.getY() + this.getHeight() / 2 - 3, CommonColors.LIGHT_GRAY);
+    public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        context.text(Minecraft.getInstance().font, this.name, this.getX(), this.getY() + this.getHeight() / 2 - 3, CommonColors.LIGHT_GRAY);
 
         this.setPos(this.plus,  this.getX() + this.getWidth() - 25, this.getY(), this.getHeight());
-        this.plus.render(context, mouseX, mouseY, deltaTicks);
+        this.plus.extractRenderState(context, mouseX, mouseY, deltaTicks);
 
         this.setPos(this.text, this.getX() + this.getWidth() - 25 - 55, this.getY(), this.getHeight());
-        this.text.render(context, mouseX, mouseY, deltaTicks);
+        this.text.extractWidgetRenderState(context, mouseX, mouseY, deltaTicks);
 
         this.setPos(this.minus, this.getX() + this.getWidth() - 25 - 55 - 25, this.getY(), this.getHeight());
-        this.minus.render(context, mouseX, mouseY, deltaTicks);
+        this.minus.extractRenderState(context, mouseX, mouseY, deltaTicks);
     }
 
     @Override

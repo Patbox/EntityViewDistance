@@ -22,6 +22,9 @@ public class EvdUtils {
     public static String getKey(String type) {
         return "entityviewdistance" + "." + type;
     }
+    public static Identifier id(String type) {
+        return Identifier.fromNamespaceAndPath("entityviewdistance", type);
+    }
 
     public static void initialize(EntityType type, Identifier identifier) {
         var map = ConfigManager.getConfig().entityViewDistances;

@@ -10,7 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
@@ -133,7 +133,7 @@ public class EvdSettingsScreen extends Screen {
             var id = Identifier.tryParse(search.substring(1));
             if (id != null) {
                 var tag = TagKey.create(Registries.ENTITY_TYPE, id);
-                predicate = entry -> entry.is(tag);
+                predicate = entry -> entry.builtInRegistryHolder().is(tag) ;
             } else {
                 String finalSearch = search;
                 predicate = entry -> entry.getDescription().getString().toLowerCase(Locale.ROOT).contains(finalSearch);
@@ -206,10 +206,10 @@ public class EvdSettingsScreen extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             this.label.setCentered(true);
             this.setPos(this.label, this.getX() + (this.getWidth() - this.label.getWidth()) / 2, this.getY(), this.getHeight());
-            this.label.render(context, mouseX, mouseY, deltaTicks);
+            this.label.extractRenderState(context, mouseX, mouseY, deltaTicks);
         }
 
         public List<? extends GuiEventListener> children() {
@@ -228,10 +228,10 @@ public class EvdSettingsScreen extends Screen {
             this.separator = new SpruceSeparatorWidget(text, renderer);
         }
 
-        public void render(GuiGraphics context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
+        public void extract(GuiGraphicsExtractor context, int index, int y, int x, int entryWidth, int entryHeight, int mouseX, int mouseY, boolean hovered, float tickDelta) {
             this.setPos(this.separator, x, y, entryHeight);
             this.separator.setWidth(entryWidth);
-            this.separator.render(context, mouseX, mouseY, tickDelta);
+            this.separator.extractRenderState(context, mouseX, mouseY, tickDelta);
         }
 
         public List<? extends GuiEventListener> children() {
@@ -248,11 +248,11 @@ public class EvdSettingsScreen extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             //this.setPos(this.separator, x, y, entryHeight);
             this.separator.setWidth(this.getWidth());
             this.separator.setPosition(this.getX(), this.getY());
-            this.separator.render(context, mouseX, mouseY, deltaTicks);
+            this.separator.extractRenderState(context, mouseX, mouseY, deltaTicks);
         }
     }
 
@@ -272,7 +272,7 @@ public class EvdSettingsScreen extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
+        public void extractContent(GuiGraphicsExtractor context, int mouseX, int mouseY, boolean hovered, float deltaTicks) {
             int i = 0;
             int j = this.screen.width / 2 - 155;
 
@@ -280,7 +280,7 @@ public class EvdSettingsScreen extends Screen {
                 var widget = var13.next();
                 this.setPos(widget, j + i, this.getY(), this.getHeight());
                 widget.setY(this.getY());
-                widget.render(context, mouseX, mouseY, deltaTicks);
+                widget.extractRenderState(context, mouseX, mouseY, deltaTicks);
             }
 
         }

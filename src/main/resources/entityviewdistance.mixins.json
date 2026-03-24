@@ -4,13 +4,14 @@
   "package": "eu.pb4.entityviewdistance.mixin",
   "compatibilityLevel": "JAVA_16",
   "mixins": [
-    "EntityMixin",
-    "TrackedEntityAccessor",
-    "EntityTypeMixin",
     "ChunkMapAccessor",
-    "ChunkMapMixin"
+    "ChunkMapMixin",
+    "EntityMixin",
+    "EntityTypeMixin",
+    "TrackedEntityAccessor"
   ],
   "client": [
+    "EditBoxAccessor",
     "client.EntityRenderDispatcherMixin",
     "client.VideoSettingsScreenMixin"
   ],
