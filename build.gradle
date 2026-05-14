@@ -38,7 +38,7 @@ dependencies {
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
 	implementation "net.caffeinemc:sodium-fabric:0.8.7+mc26.1"
-
+	compileOnly "me.lucko:fabric-permissions-api:0.7.0"
 
 	compileOnly("com.terraformersmc:modmenu:18.0.0-alpha.6")
 	//modLocalRuntime("com.terraformersmc:modmenu:4.0.0")
