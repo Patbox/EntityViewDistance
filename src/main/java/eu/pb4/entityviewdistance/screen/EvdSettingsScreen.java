@@ -93,7 +93,7 @@ public class EvdSettingsScreen extends Screen {
 
     public void onClose() {
         this.saveChanges();
-        this.minecraft.setScreen(this.parent);
+        this.minecraft.setScreenAndShow(this.parent);
     }
 
     protected void updateOptions(String search) {

@@ -17,7 +17,7 @@ public class SodiumCompat implements ConfigEntryPoint {
                 )
                 .addPage(builder.createExternalPage()
                         .setName(Component.translatable("entityviewdistance.button.options.sodium"))
-                        .setScreenConsumer(screen -> Minecraft.getInstance().setScreen(new EvdSettingsScreen(screen, Minecraft.getInstance().options)))
+                        .setScreenConsumer(screen -> Minecraft.getInstance().setScreenAndShow(new EvdSettingsScreen(screen, Minecraft.getInstance().options)))
                 )
 
         ;

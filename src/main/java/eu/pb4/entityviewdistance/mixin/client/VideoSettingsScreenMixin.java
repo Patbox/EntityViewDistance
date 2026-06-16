@@ -25,11 +25,11 @@ public class VideoSettingsScreenMixin {
     private static OptionInstance<?> entityViewDistance_addOptionButton(Options instance) {
         return new OptionInstance<>(EvdUtils.BUTTON_TEXT, OptionInstance.noTooltip(), (x, y) -> Component.empty(), new OptionInstance.ValueSet<>() {
             @Override
-            public Function<OptionInstance<Boolean>, AbstractWidget> createButton(OptionInstance.TooltipSupplier<Boolean> tooltipFactory, Options gameOptions, int x, int y, int width, Consumer<Boolean> changeCallback) {
+            public Function<OptionInstance<Boolean>, AbstractWidget> createButton(OptionInstance.TooltipSupplier<Boolean> tooltip, Options options, int x, int y, int width, OptionInstance.ValueUpdateListener<? super Boolean> onValueChanged) {
                 return (option) -> {
                     var client = Minecraft.getInstance();
                     return Button.builder(Component.translatable(EvdUtils.BUTTON_TEXT),
-                            btn -> Minecraft.getInstance().setScreen(new EvdSettingsScreen(client.screen, client.options))).pos(x, y).width(width).build();
+                            btn -> Minecraft.getInstance().setScreenAndShow(new EvdSettingsScreen(client.gui.screen(), client.options))).pos(x, y).width(width).build();
                 };
             }
 

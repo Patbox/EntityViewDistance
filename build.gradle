@@ -37,7 +37,7 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 
 	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-	implementation "net.caffeinemc:sodium-fabric:0.8.7+mc26.1"
+	compileOnly "net.caffeinemc:sodium-fabric:0.8.7+mc26.1"
 	compileOnly "me.lucko:fabric-permissions-api:0.7.0"
 
 	compileOnly("com.terraformersmc:modmenu:18.0.0-alpha.6")
@@ -100,7 +100,7 @@ publishing {
 	}
 }
 
-curseforge {
+/*curseforge {
 	if (System.getenv("CURSEFORGE")) {
 		apiKey = System.getenv("CURSEFORGE")
 
@@ -126,7 +126,7 @@ curseforge {
 	jar {
 		finalizedBy project.tasks.curseforge
 	}
-}
+}*/
 
 if (System.getenv("MODRINTH")) {
 	modrinth {
